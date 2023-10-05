@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { styled, alpha } from "@mui/material/styles";
 import cookies from "js-cookie";
 import MuiAppBar from "@mui/material/AppBar";
@@ -75,7 +75,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 export default function NavBar() {
   const { t } = useTranslation();
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
   const updateOpen = useDasboardApp((state) => state.updateOpen);
@@ -121,28 +121,6 @@ export default function NavBar() {
     document.title = t("Title");
   }, [currentLanguage, t]);
 
-  const menuId = "primary-search-account-menu";
-  const renderMenu = (
-    <Menu
-      anchorEl={anchorEl}
-      anchorOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-      id={menuId}
-      keepMounted
-      transformOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-      open={isMenuOpen}
-      onClose={handleMenuClose}
-    >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
-    </Menu>
-  );
-
   const languageId = "primary-search-account-menu";
   const renderLanguageMenu = (
     <Menu
@@ -164,6 +142,7 @@ export default function NavBar() {
         return (
           <MenuItem
             onClick={() => {
+              localStorage.setItem("language", lang);
               i18next.changeLanguage(code);
             }}
             disabled={code === currentLanguageCode}
@@ -172,6 +151,28 @@ export default function NavBar() {
           </MenuItem>
         );
       })}
+    </Menu>
+  );
+
+  const menuId = "primary-search-account-menu";
+  const renderMenu = (
+    <Menu
+      anchorEl={anchorEl}
+      anchorOrigin={{
+        vertical: "top",
+        horizontal: "right",
+      }}
+      id={menuId}
+      keepMounted
+      transformOrigin={{
+        vertical: "top",
+        horizontal: "right",
+      }}
+      open={isMenuOpen}
+      onClose={handleMenuClose}
+    >
+      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
+      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
     </Menu>
   );
 
@@ -312,7 +313,7 @@ export default function NavBar() {
               <Chip
                 avatar={<Avatar alt="Natacha" src="images/avatar/1.jpg" />}
                 label="Avatar"
-                sx={{ color: "#333", background: "#fff" }}
+                sx={{ color: "#333", background: "#fff", width: "200px", p: 3 }}
                 variant="contained"
               />
             </IconButton>

@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { styled, useTheme } from "@mui/material/styles";
+import { ThemeProvider, styled, useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import MuiDrawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
 import CssBaseline from "@mui/material/CssBaseline";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
-import ArrowCircleLeftRoundedIcon from "@mui/icons-material/ArrowCircleLeftRounded";
 import ArrowCircleRightRoundedIcon from "@mui/icons-material/ArrowCircleRightRounded";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
@@ -32,7 +31,7 @@ import { useNavigate } from "react-router-dom";
 import { useDasboardApp } from "../../dashboardApp";
 import { useTranslation } from "react-i18next";
 import cookies from "js-cookie";
-import i18next, { t } from "i18next";
+import i18next from "i18next";
 
 const drawerWidth = 250;
 
@@ -198,73 +197,82 @@ export default function SideNav() {
   }, [currentLanguage, t]);
 
   return (
-    <Box sx={{ display: "flex" }}>
-      <CssBaseline />
-      <Box height={30} />
-      <Drawer variant="permanent" open={open}>
-        <DrawerHeader>
-          <IconButton>
-            {theme.direction === "rtl" ? (
+    <ThemeProvider theme={theme}>
+      <Box sx={{ display: "flex" }}>
+        <CssBaseline />
+        <Box height={40} />
+        <Drawer
+          variant="permanent"
+          open={open}
+          anchor={
+            localStorage.getItem("language") === "English" ? "left" : "right"
+          }
+        >
+          <DrawerHeader>
+            <IconButton>
               <ArrowCircleRightRoundedIcon />
-            ) : (
-              <ArrowCircleLeftRoundedIcon />
-            )}
-          </IconButton>
-        </DrawerHeader>
-        <Divider />
-        <List>
-          {SideBarMenus.map((item, index) => {
-            return (
-              <ListItem
-                key={index}
-                disableGutters
-                disablePadding
-                sx={{
-                  display: "block",
-                  "&.Mui-selected": {
-                    color: "#fff",
-                    background: "linear-gradient(to right, #ffafbd, #ffc3a0)",
-                  },
-                }}
-                onClick={() => {
-                  navigate(item.path);
-                }}
-              >
-                <ListItemButton
+            </IconButton>
+          </DrawerHeader>
+          <Divider />
+          <List>
+            {SideBarMenus.map((item, index) => {
+              return (
+                <ListItem
+                  key={index}
+                  disableGutters
+                  disablePadding
                   sx={{
-                    minHeight: 48,
-                    justifyContent: open ? "initial" : "center",
-                    px: 2.5,
-                    borderRadius: "50px",
-                    "&:hover": {
-                      background: "linear-gradient(to right, #ffafbd, #ffc3a0)",
+                    display: "block",
+                    "&.Mui-selected": {
                       color: "#fff",
-                      transition: "0.4s ",
+                      background: "linear-gradient(to right, #ffafbd, #ffc3a0)",
                     },
                   }}
+                  onClick={() => {
+                    navigate(item.path);
+                  }}
                 >
-                  <ListItemIcon
+                  <ListItemButton
                     sx={{
-                      minWidth: "0",
-                      mr: open ? 3 : "auto",
-                      justifyContent: "center",
+                      minHeight: 48,
+                      justifyContent: open ? "initial" : "center",
+                      px: 2.5,
+                      borderRadius: "10px",
                       "&:hover": {
+                        background:
+                          "linear-gradient(to right, #ffafbd, #ffc3a0)",
                         color: "#fff",
+                        transition: "0.4s ",
                       },
                     }}
                   >
-                    <Tooltip title={t(`${item.title}`)}>{item.icon}</Tooltip>
-                  </ListItemIcon>
-                  <ListItemText
-                    sx={{ opacity: open ? 1 : 0 }}
-                    primary={t(`${item.title}`)}
-                  />
-                </ListItemButton>
-              </ListItem>
-            );
-          })}
-        </List>
-      </Drawer>
-    </Box>
+                    <ListItemIcon
+                      sx={{
+                        minWidth: "0",
+                        mr: open ? 2 : "auto",
+                        justifyContent: "center",
+                        "&:hover": {
+                          color: "#fff",
+                        },
+                      }}
+                    >
+                      <Tooltip title={t(`${item.title}`)}>{item.icon}</Tooltip>
+                    </ListItemIcon>
+                    <ListItemText
+                      sx={{
+                        opacity: open ? 1 : 0,
+                        textAlign: open ? "initial" : "flex-end",
+                        mr: open ? 2 : "auto",
+                      }}
+                      primary={t(`${item.title}`)}
+                    />
+                  </ListItemButton>
+                </ListItem>
+              );
+            })}
+          </List>
+        </Drawer>
+      </Box>
+    </ThemeProvider>
   );
 }
