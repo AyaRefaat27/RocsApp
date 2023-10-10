@@ -88,7 +88,16 @@ export default function SignUp() {
         container
         component="main"
         sx={{
-          height: "100vh",
+          height: "100% auto",
+
+          backgroundImage: "url(https://source.unsplash.com/random?wallpapers)",
+          backgroundRepeat: "no-repeat",
+          backgroundColor: (t) =>
+            t.palette.mode === "light"
+              ? t.palette.grey[50]
+              : t.palette.grey[900],
+          backgroundSize: "cover",
+          backgroundPosition: "center",
         }}
       >
         <CssBaseline />
@@ -113,7 +122,7 @@ export default function SignUp() {
               alignItems: "center",
             }}
           >
-            <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+            <Avatar sx={{ m: 1, bgcolor: "info.main" }}>
               <LockOutlinedIcon />
             </Avatar>
             <Typography component="h1" variant="h5">
@@ -197,11 +206,11 @@ export default function SignUp() {
               <Button
                 type="submit"
                 fullWidth
+                color="info"
                 variant="contained"
                 sx={{
                   mt: 3,
                   mb: 2,
-                  background: "linear-gradient(to right, #ffafbd, #ffc3a0)",
                   color: "#fff",
                   fontWeight: "bold",
                 }}

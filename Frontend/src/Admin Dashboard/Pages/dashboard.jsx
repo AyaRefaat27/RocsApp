@@ -3,8 +3,10 @@ import SideNav from "../Sidnav/sidenav";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import NavBar from "../NavBar/navBar";
+import { useTranslation } from "react-i18next";
 
 export default function Dashboard() {
+  const { t } = useTranslation();
   return (
     <>
       <NavBar />
@@ -12,10 +14,7 @@ export default function Dashboard() {
       <Box sx={{ display: "flex", marginTop: "40px" }}>
         <SideNav />
         <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-          <Typography variant="h4">Dashboard</Typography>
-          <Typography paragraph>
-            Consequat mauris nunc congue nisi vitae suscipit.
-          </Typography>
+          <Typography variant="h4">{t("Dashboard")}</Typography>
         </Box>
       </Box>
     </>

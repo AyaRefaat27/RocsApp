@@ -31,9 +31,9 @@ i18n
 const root = ReactDOM.createRoot(document.getElementById("root"));
 const loadingMarkup = (
   <Typography variant="h4" sx={{ textAlign: "center" }}>
-    <div>
+    {/* <div>
       <img src="./assets/images/logo1.png" />
-    </div>
+    </div> */}
     Loading...
   </Typography>
 );

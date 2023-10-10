@@ -25,6 +25,7 @@ import {
 
 import i18next from "i18next";
 import { useTranslation } from "react-i18next";
+import AccountMenu from "../Dropdown/accountMenu";
 
 const AppBar = styled(
   MuiAppBar,
@@ -241,10 +242,7 @@ export default function NavBar() {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar
-        position="fixed"
-        sx={{ background: "linear-gradient(to right, #ffafbd, #ffc3a0)" }}
-      >
+      <AppBar position="fixed" color="info">
         <Toolbar>
           <IconButton
             size="large"
@@ -261,7 +259,12 @@ export default function NavBar() {
             variant="h6"
             noWrap
             component="div"
-            sx={{ display: { xs: "none", sm: "block" } }}
+            sx={{
+              display: { xs: "none", sm: "block" },
+              paddingInlineEnd: "1rem",
+              paddingInlineStart: "1rem",
+              textAlign: "center",
+            }}
           >
             QmmaTech
           </Typography>
@@ -275,16 +278,6 @@ export default function NavBar() {
 
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: "none", md: "flex" } }}>
-            <IconButton
-              size="large"
-              aria-label="show 1 new notifications"
-              color="inherit"
-            >
-              <Badge badgeContent={1} color="error">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton>
-
             <IconButton size="large" aria-label="Setting" color="inherit">
               <Settings />
             </IconButton>
@@ -305,17 +298,12 @@ export default function NavBar() {
               size="large"
               edge="end"
               aria-label="account of current user"
-              aria-controls={menuId}
+              // aria-controls={menuId}
               aria-haspopup="true"
-              // onClick={handleProfileMenuOpen}
+              onClick={handleProfileMenuOpen}
               color="inherit"
             >
-              <Chip
-                avatar={<Avatar alt="Natacha" src="images/avatar/1.jpg" />}
-                label="Avatar"
-                sx={{ color: "#333", background: "#fff", width: "200px", p: 3 }}
-                variant="contained"
-              />
+              <AccountMenu />
             </IconButton>
           </Box>
 

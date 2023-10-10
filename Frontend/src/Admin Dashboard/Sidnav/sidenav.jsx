@@ -14,6 +14,8 @@ import ListItemText from "@mui/material/ListItemText";
 import Tooltip from "@mui/material/Tooltip";
 import {
   AccountCircleRounded,
+  BusinessRounded,
+  ChatRounded,
   ContactsRounded,
   DashboardCustomizeRounded,
   Diversity3Rounded,
@@ -82,13 +84,13 @@ const Drawer = styled(MuiDrawer, {
   }),
 }));
 
-const NavbarLogo = styled("img")(() => ({
-  cursor: "pointer",
-  width: "120px",
-  display: "flex",
-  alignItems: "flex-start",
-  justifyContent: "flex-start",
-}));
+// const NavbarLogo = styled("img")(() => ({
+//   cursor: "pointer",
+//   width: "120px",
+//   display: "flex",
+//   alignItems: "flex-start",
+//   justifyContent: "flex-start",
+// }));
 
 const SideBarMenus = [
   {
@@ -98,9 +100,15 @@ const SideBarMenus = [
   },
 
   {
-    title: "Profile",
-    icon: <AccountCircleRounded />,
-    path: "/profile",
+    title: "Business Account ",
+    icon: <BusinessRounded />,
+    path: "/business_account",
+  },
+
+  {
+    title: "Chatpot ",
+    icon: <ChatRounded />,
+    path: "/chatbot",
   },
 
   {
@@ -223,10 +231,6 @@ export default function SideNav() {
                   disablePadding
                   sx={{
                     display: "block",
-                    "&.Mui-selected": {
-                      color: "#fff",
-                      background: "linear-gradient(to right, #ffafbd, #ffc3a0)",
-                    },
                   }}
                   onClick={() => {
                     navigate(item.path);
@@ -237,11 +241,9 @@ export default function SideNav() {
                       minHeight: 48,
                       justifyContent: open ? "initial" : "center",
                       px: 2.5,
-                      borderRadius: "10px",
+                      borderRadius: "50px",
                       "&:hover": {
-                        background:
-                          "linear-gradient(to right, #ffafbd, #ffc3a0)",
-                        color: "#fff",
+                        background: "#0288d1",
                         transition: "0.4s ",
                       },
                     }}
@@ -253,6 +255,7 @@ export default function SideNav() {
                         justifyContent: "center",
                         "&:hover": {
                           color: "#fff",
+                          background: "#0288d1",
                         },
                       }}
                     >

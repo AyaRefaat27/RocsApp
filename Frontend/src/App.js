@@ -1,12 +1,13 @@
-import "./App.css";
+import { Provider } from "react-redux";
 import Routers from "./Router/routers";
-// import Test from "./Admin Dashboard/Pages/test";
+import store from "./Admin Dashboard/Chat/Functions/store.js";
 function App() {
   return (
-    <div>
-      {/* <Test /> */}
-      <Routers />
-    </div>
+    <Provider store={store}>
+      <div>
+        <Routers />
+      </div>
+    </Provider>
   );
 }
 
