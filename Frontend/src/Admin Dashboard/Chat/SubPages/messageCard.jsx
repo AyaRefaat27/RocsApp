@@ -7,32 +7,71 @@ import CardActions from "@mui/material/CardActions";
 import Typography from "@mui/material/Typography";
 import { Box, Button } from "@mui/material";
 import { useSelector } from "react-redux";
+// import { useNavigate } from "react-router-dom";
 
 export default function MessageCard() {
   const cardData = useSelector((state) => state.card);
+  const buttonsData = useSelector((state) => state.data);
+  // const navigate = useNavigate();
   return (
     <Box>
+      <Typography varient="body1" sx={{ p: 1 }}>
+        {" "}
+        Build Your Message
+      </Typography>
       <Card sx={{ maxWidth: 400 }}>
-        <CardHeader
-          title={cardData.category}
-          subheader={cardData.title}
-        ></CardHeader>
-        <CardMedia
-          component="img"
-          height="194"
-          image="https://www.filemail.com/images/marketing/upload-your-files.svg"
-          // image="https://www.ilovepdf.com/storage/blog/42-1623231606-Add-image-to-PDF.png"
-          alt="Paella dish"
-        />
-        <CardContent>
-          <Typography variant="body1" sx={{ color: "#333" }}>
-            {cardData.messageBody}
-          </Typography>
+        <CardHeader title={cardData.category} subheader={cardData.title} />
 
+        {/* Text */}
+        {cardData.dataType === "text" && (
+          <Typography variant="body1" sx={{ color: "#333" }}>
+            {cardData.textValue}
+          </Typography>
+        )}
+
+        {/* Photo */}
+        {cardData.dataType === "photo" && (
+          <Box>
+            {cardData.photoValue && (
+              <CardMedia
+                component="img"
+                height="194"
+                image={URL.createObjectURL(cardData.photoValue)}
+                alt=" Selected Image"
+              />
+            )}
+          </Box>
+        )}
+
+        {/* Video */}
+        {cardData.dataType === "video" && (
+          <Box>
+            {cardData.videoValue && (
+              <CardMedia
+                component="video"
+                height="194"
+                controls
+                image={URL.createObjectURL(cardData.videoValue)}
+                alt=" Selected Video"
+              />
+            )}
+          </Box>
+        )}
+
+        <CardContent>
+          <Box>
+            <Typography variant="body1" sx={{ color: "#333" }}>
+              {cardData.messageBody}
+            </Typography>
+          </Box>
+        </CardContent>
+
+        <Box sx={{ mt: 2 }}>
           <Typography variant="body2" color="text.secondary">
             {cardData.messageFooter}
           </Typography>
-        </CardContent>
+        </Box>
+
         <CardActions
           sx={{
             display: "flex",
@@ -43,15 +82,20 @@ export default function MessageCard() {
           }}
         >
           <Box>
-            <Button fullWidth variant="outlined" sx={{ mb: 1 }}>
-              Contact Service Center
-            </Button>
-            <Button fullWidth variant="outlined" sx={{ mb: 1 }}>
-              Go to Your Profile
-            </Button>
-            <Button fullWidth variant="outlined" sx={{ mb: 1 }}>
-              Visit Our Site
-            </Button>
+            {buttonsData.map((button, index) => {
+              return (
+                <Button
+                  fullWidth
+                  key={index}
+                  variant={button.variant}
+                  href={button.path}
+                  size={button.size}
+                  sx={{ mt: 1, mb: 1 }}
+                >
+                  {button.text}
+                </Button>
+              );
+            })}
           </Box>
         </CardActions>
       </Card>

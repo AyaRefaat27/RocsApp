@@ -27,7 +27,12 @@ import {
   PanToolAltRounded,
   ScheduleRounded,
   SupportAgentRounded,
+  ReportRounded,
+  TopicRounded,
+  AlternateEmailRounded,
+  WorkspacePremiumRounded,
 } from "@mui/icons-material";
+import CampaignRoundedIcon from "@mui/icons-material/CampaignRounded";
 import SettingsSuggestRoundedIcon from "@mui/icons-material/SettingsSuggestRounded";
 import { useNavigate } from "react-router-dom";
 import { useDasboardApp } from "../../dashboardApp";
@@ -106,9 +111,45 @@ const SideBarMenus = [
   },
 
   {
-    title: "Chatpot ",
+    title: "Chatbot ",
     icon: <ChatRounded />,
     path: "/chatbot",
+  },
+
+  {
+    title: "Campaign ",
+    icon: <CampaignRoundedIcon />,
+    path: "/",
+  },
+
+  {
+    title: "Templates ",
+    icon: <TopicRounded />,
+    path: "/",
+  },
+
+  {
+    title: "Send Message",
+    icon: <MessageRounded />,
+    path: "/",
+  },
+
+  {
+    title: "Reports",
+    icon: <ReportRounded />,
+    path: "/",
+  },
+
+  {
+    title: "Alerts",
+    icon: <NotificationsRounded />,
+    path: "/",
+  },
+
+  {
+    title: "WorkSpace",
+    icon: <WorkspacePremiumRounded />,
+    path: "/",
   },
 
   {
@@ -130,45 +171,21 @@ const SideBarMenus = [
   },
 
   {
+    title: "Contacts",
+    icon: <ContactsRounded />,
+    path: "/",
+  },
+
+  {
     title: "Setting",
     icon: <SettingsSuggestRoundedIcon />,
     path: "/setting",
   },
 
   {
-    title: "Schedule",
-    icon: <ScheduleRounded />,
-    path: "/setting",
-  },
-
-  {
-    title: "Contacts",
-    icon: <ContactsRounded />,
-    path: "/setting",
-  },
-
-  {
-    title: "Messages",
-    icon: <MessageRounded />,
-    path: "/setting",
-  },
-
-  {
-    title: "Notifications",
-    icon: <NotificationsRounded />,
-    path: "/setting",
-  },
-
-  {
     title: "Tools",
     icon: <PanToolAltRounded />,
-    path: "/setting",
-  },
-
-  {
-    title: "Support",
-    icon: <SupportAgentRounded />,
-    path: "/setting",
+    path: "/",
   },
 
   {

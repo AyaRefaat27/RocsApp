@@ -5,7 +5,7 @@ import styled from "@emotion/styled";
 import TextControll from "../Functions/textControll";
 import ArrowRightRoundedIcon from "@mui/icons-material/ArrowRightRounded";
 import { useDispatch } from "react-redux";
-import { saveCardData } from "../Functions/cardSlice";
+import { updateData } from "../Functions/cardSlice";
 
 const StyledTextarea = styled.textarea`
   padding: 10px;
@@ -32,9 +32,11 @@ export default function MessageFooter() {
     event.preventDefault();
 
     const cardData = { messageFooter };
-    dispatch(saveCardData(cardData));
 
-    setMessageFooter("");
+    localStorage.setItem("formData", JSON.stringify(cardData));
+    dispatch(updateData(cardData));
+
+    // setMessageFooter("");
   };
   return (
     <>
@@ -98,7 +100,6 @@ export default function MessageFooter() {
               onChange={handleMessageFooterChange}
             />
           </div>
-          <TextControll />
         </Box>
         <Button type="submit" varient="outlined">
           Save <ArrowRightRoundedIcon />

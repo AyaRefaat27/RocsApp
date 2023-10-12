@@ -15,7 +15,7 @@ import {
   createTheme,
 } from "@mui/material";
 import { useDispatch } from "react-redux";
-import { saveCardData } from "../Functions/cardSlice";
+import { updateData } from "../Functions/cardSlice";
 import ArrowRightRoundedIcon from "@mui/icons-material/ArrowRightRounded";
 
 const currencies = [
@@ -89,10 +89,11 @@ export default function IdentifyMessage() {
     event.preventDefault();
 
     const cardData = { category, title };
-    dispatch(saveCardData(cardData));
+    localStorage.setItem("formData", JSON.stringify(cardData));
+    dispatch(updateData(cardData));
 
-    setCategory("");
-    setTitle("");
+    // setCategory("");
+    // setTitle("");
   };
 
   return (

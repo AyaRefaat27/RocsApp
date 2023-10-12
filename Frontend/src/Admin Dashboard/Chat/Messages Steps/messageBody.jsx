@@ -4,7 +4,7 @@ import BorderColorRoundedIcon from "@mui/icons-material/BorderColorRounded";
 import styled from "@emotion/styled";
 import TextControll from "../Functions/textControll";
 import { useDispatch } from "react-redux";
-import { saveCardData } from "../Functions/cardSlice";
+import { updateData } from "../Functions/cardSlice";
 import ArrowRightRoundedIcon from "@mui/icons-material/ArrowRightRounded";
 const StyledTextarea = styled.textarea`
   padding: 10px;
@@ -27,19 +27,21 @@ export default function MessageBody() {
     setMessageBody(event.target.value);
   };
 
-  const handleStepThree = (event) => {
+  const handleSaveStepThree = (event) => {
     event.preventDefault();
 
     const cardData = { messageBody };
-    dispatch(saveCardData(cardData));
 
-    setMessageBody("");
+    localStorage.setItem("formData", JSON.stringify(cardData));
+    dispatch(updateData(cardData));
+
+    // setMessageBody("");
   };
   return (
     <>
       <Box
         component="form"
-        onSubmit={handleStepThree}
+        onSubmit={handleSaveStepThree}
         sx={{
           p: 1,
           mt: 2,

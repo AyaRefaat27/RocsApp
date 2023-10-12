@@ -112,7 +112,7 @@ export default function VerticalLinearStepper() {
             <StepLabel
               onClick={handleStep(index)}
               optional={
-                index === 3 ? (
+                index === 4 ? (
                   <Typography variant="caption">Last step</Typography>
                 ) : null
               }
@@ -154,7 +154,7 @@ export default function VerticalLinearStepper() {
           }}
         >
           <Typography variant="body1">
-            All steps completed - you&apos;re finished
+            All steps completed - you&apos;re finished your Message.
           </Typography>
 
           <Button
@@ -166,12 +166,7 @@ export default function VerticalLinearStepper() {
           </Button>
         </Paper>
       )}
-      <Button
-        onClick={handleReset}
-        sx={{ mt: 1, mb: 1 }}
-        fullWidth
-        variant="outlined"
-      >
+      <Button sx={{ mt: 1, mb: 1 }} fullWidth variant="outlined">
         Save Changes
       </Button>
     </Box>

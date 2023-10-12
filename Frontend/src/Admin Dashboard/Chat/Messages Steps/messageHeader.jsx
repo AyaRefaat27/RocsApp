@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import styled from "@emotion/styled";
 import ArrowRightRoundedIcon from "@mui/icons-material/ArrowRightRounded";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import {
   Box,
   Button,
+  CardMedia,
   FormControl,
   FormControlLabel,
   FormGroup,
@@ -15,25 +17,20 @@ import {
   Typography,
   createTheme,
 } from "@mui/material";
+import { useDispatch } from "react-redux";
+import { updateData } from "../Functions/cardSlice";
 
-const header = [
-  {
-    value: "Main Menu",
-    label: "Text",
-  },
-  {
-    value: "Sub Menu1",
-    label: "Photo",
-  },
-  {
-    value: "Sub Menu2",
-    label: "Video",
-  },
-  {
-    value: "Sub Menu3",
-    label: "GIF",
-  },
-];
+const VisuallyHiddenInput = styled("input")`
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  height: "100%";
+  m:1,
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: "50ch";
+`;
+
 export default function MessageHeader() {
   const theme = createTheme();
   const Android12Switch = styled(Switch)(() => ({
@@ -68,9 +65,51 @@ export default function MessageHeader() {
       margin: 2,
     },
   }));
+
+  const [dataType, setDataType] = useState("");
+  const [textValue, setTextValue] = useState("");
+  const [photoValue, setPhotoValue] = useState(null);
+  const [videoValue, setVideoValue] = useState(null);
+
+  const dispatch = useDispatch();
+
+  const handleDataTypeChange = (event) => {
+    setDataType(event.target.value);
+  };
+
+  const handleTextChange = (event) => {
+    setTextValue(event.target.value);
+  };
+
+  const handlePhotoChange = (event) => {
+    setPhotoValue(event.target.files[0]);
+  };
+
+  const handleVideoChange = (event) => {
+    setVideoValue(event.target.files[0]);
+  };
+
+  const handleSaveStepTwo = (event) => {
+    event.preventDefault();
+
+    const cardData = {
+      dataType,
+      textValue,
+      photoValue,
+      videoValue,
+    };
+
+    // Save the data in localStorage
+    localStorage.setItem("cardData", JSON.stringify(cardData));
+
+    // Dispatch the action to update the data in the Redux store
+    dispatch(updateData(cardData));
+  };
   return (
     <>
       <Box
+        component="form"
+        onSubmit={handleSaveStepTwo}
         sx={{
           p: 1,
           mt: 2,
@@ -85,6 +124,7 @@ export default function MessageHeader() {
             justifyContent: "space-between",
             alignItems: "flex-start",
             padding: "10px",
+            flexWrap: "wrap",
           }}
         >
           <Typography
@@ -111,42 +151,117 @@ export default function MessageHeader() {
         </Box>
 
         <Box
-          component="form"
           sx={{
-            "& .MuiTextField-root": { m: 1, width: "20ch" },
+            "& .MuiTextField-root": { m: 1, width: "100%" },
             padding: "10px",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "flex-start",
-            flexWrap: "wrap",
           }}
-          noValidate
-          autoComplete="off"
         >
           <div>
             <TextField
               id="outlined-select-currency"
               select
               label="Select"
-              defaultValue="Main Menu"
-              helperText="Select Menu"
+              defaultValue="Text"
+              value={dataType}
+              onChange={handleDataTypeChange}
+              helperText="Select Header Type"
             >
-              {header.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
+              <MenuItem value="text">Text</MenuItem>
+              <MenuItem value="photo">Photo</MenuItem>
+              <MenuItem value="video">Video</MenuItem>
             </TextField>
           </div>
           <div>
-            <FormControl sx={{ m: 1, width: "40ch" }} variant="outlined">
-              <OutlinedInput
-                id="outlined-adornment-weight"
-                startAdornment={
-                  <InputAdornment position="start">Value:</InputAdornment>
-                }
-              />
-            </FormControl>
+            {/* Text */}
+            {dataType === "text" && (
+              <FormControl sx={{ m: 1, width: "100%" }} variant="outlined">
+                <OutlinedInput
+                  id="outlined-adornment-weight"
+                  multiline
+                  value={textValue}
+                  onChange={handleTextChange}
+                  startAdornment={
+                    <InputAdornment position="start">
+                      Message Header:
+                    </InputAdornment>
+                  }
+                />
+              </FormControl>
+            )}
+
+            {/* Photo */}
+            {dataType === "photo" && (
+              <>
+                <Box width="100%">
+                  <Button
+                    component="label"
+                    variant="outlined"
+                    startIcon={<CloudUploadIcon />}
+                    sx={{ m: 1, width: "30ch" }}
+                  >
+                    Upload Image
+                    <VisuallyHiddenInput
+                      type="file"
+                      accept="image/*"
+                      onChange={handlePhotoChange}
+                    />
+                  </Button>
+                  {photoValue && (
+                    <CardMedia
+                      component="img"
+                      height="100"
+                      width="100"
+                      image={URL.createObjectURL(photoValue)}
+                      alt="Uploades Image"
+                    />
+                  )}
+                </Box>
+                {/* <FormControl sx={{ m: 1, width: "40ch" }} variant="outlined">
+                <OutlinedInput
+                  id="outlined-adornment-weight"
+                  multiline
+                  value={textValue}
+                  onChange={handleTextChange}
+                  startAdornment={
+                    <InputAdornment position="start">
+                      Message Header:
+                    </InputAdornment>
+                  }
+                />
+              </FormControl> */}
+              </>
+            )}
+
+            {/* Video */}
+            {dataType === "video" && (
+              <>
+                <Box width="100%">
+                  <Button
+                    component="label"
+                    variant="outlined"
+                    sx={{ m: 1, width: "30ch" }}
+                    startIcon={<CloudUploadIcon />}
+                  >
+                    Upload Video
+                    <VisuallyHiddenInput
+                      type="file"
+                      accept="video/*"
+                      onChange={handleVideoChange}
+                    />
+                  </Button>
+                  {videoValue && (
+                    <CardMedia
+                      component="video"
+                      height="100"
+                      width="100"
+                      controls
+                      video={URL.createObjectURL(videoValue)}
+                      alt=" Uploades Video"
+                    />
+                  )}
+                </Box>
+              </>
+            )}
           </div>
         </Box>
         <Button type="submit" varient="outlined">
