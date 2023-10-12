@@ -10,8 +10,15 @@
   "Teams": "المجموعات",
   "Schedule": "الجدول",
   "Contacts": "جهات الاتصال",
-  "Messages": "الرسائل",
+  "Send Message": "إرسال رسالة",
   "Notifications": "الإشعارات",
   "Tools": "الأدوات",
-  "Support": "الدعم"
+  "Support": "الدعم",
+  "Business Account": "حساب البزنيس",
+  "Chatbot": "شجرة الرد الآلى",
+  "Campaign": "الحملات",
+  "Templates": "النماذج",
+  "Reports": "التقارير",
+  "Alerts": "التنبيهاات",
+  "WorkSpace": "مساحة العمل"
 }

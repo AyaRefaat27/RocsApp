@@ -10,8 +10,15 @@
   "Teams": "Teams",
   "Schedule": "Schedule",
   "Contacts": "Contacts",
-  "Messages": "Messages",
+  "Send Message": "Send Message",
   "Notifications": "Notifications",
   "Tools": "Tools",
-  "Support": "Support"
+  "Support": "Support",
+  "Business Account": "Business Account",
+  "Chatbot": "Chatpot",
+  "Campaign": "Campaign",
+  "Templates": "Templates",
+  "Reports": "Reports",
+  "Alerts": "Alerts",
+  "WorkSpace": "WorkSpace"
 }
