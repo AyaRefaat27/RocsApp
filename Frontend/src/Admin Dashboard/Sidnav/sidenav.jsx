@@ -31,9 +31,13 @@ import {
   TopicRounded,
   AlternateEmailRounded,
   WorkspacePremiumRounded,
+  ExpandLess,
+  ExpandMore,
 } from "@mui/icons-material";
+import Collapse from "@mui/material/Collapse";
 import CampaignRoundedIcon from "@mui/icons-material/CampaignRounded";
 import SettingsSuggestRoundedIcon from "@mui/icons-material/SettingsSuggestRounded";
+import StarBorder from "@mui/icons-material/StarBorder";
 import { useNavigate } from "react-router-dom";
 import { useDasboardApp } from "../../dashboardApp";
 import { useTranslation } from "react-i18next";
@@ -97,109 +101,17 @@ const Drawer = styled(MuiDrawer, {
 //   justifyContent: "flex-start",
 // }));
 
-const SideBarMenus = [
-  {
-    title: "Dashboard",
-    icon: <DashboardCustomizeRounded />,
-    path: "/",
-  },
-
-  {
-    title: "Business Account ",
-    icon: <BusinessRounded />,
-    path: "/business_account",
-  },
-
-  {
-    title: "Chatbot ",
-    icon: <ChatRounded />,
-    path: "/chatbot",
-  },
-
-  {
-    title: "Campaign ",
-    icon: <CampaignRoundedIcon />,
-    path: "/",
-  },
-
-  {
-    title: "Templates ",
-    icon: <TopicRounded />,
-    path: "/",
-  },
-
-  {
-    title: "Send Message",
-    icon: <MessageRounded />,
-    path: "/",
-  },
-
-  {
-    title: "Reports",
-    icon: <ReportRounded />,
-    path: "/",
-  },
-
-  {
-    title: "Alerts",
-    icon: <NotificationsRounded />,
-    path: "/",
-  },
-
-  {
-    title: "WorkSpace",
-    icon: <WorkspacePremiumRounded />,
-    path: "/",
-  },
-
-  {
-    title: "Companies",
-    icon: <FactoryRounded />,
-    path: "/",
-  },
-
-  {
-    title: "Users",
-    icon: <Diversity3Rounded />,
-    path: "/",
-  },
-
-  {
-    title: "Teams",
-    icon: <GroupWorkRounded />,
-    path: "/",
-  },
-
-  {
-    title: "Contacts",
-    icon: <ContactsRounded />,
-    path: "/",
-  },
-
-  {
-    title: "Setting",
-    icon: <SettingsSuggestRoundedIcon />,
-    path: "/setting",
-  },
-
-  {
-    title: "Tools",
-    icon: <PanToolAltRounded />,
-    path: "/",
-  },
-
-  {
-    title: "Logout",
-    icon: <LogoutRounded />,
-    path: "/login",
-  },
-];
-
 export default function SideNav() {
   const theme = useTheme();
   const navigate = useNavigate();
   const open = useDasboardApp((state) => state.dopen);
 
+  // Close
+  const updateOpen = useDasboardApp((state) => state.updateOpen);
+  const dopen = useDasboardApp((state) => state.dopen);
+  const handleClose = () => updateOpen(!dopen);
+
+  // Language
   const { t } = useTranslation();
   const languages = [
     {
@@ -220,6 +132,131 @@ export default function SideNav() {
     document.body.dir = currentLanguage.dir || "ltr";
     document.title = t("Title");
   }, [currentLanguage, t]);
+
+  const SideBarMenus = [
+    {
+      title: "Dashboard",
+      icon: <DashboardCustomizeRounded />,
+      path: "/",
+    },
+
+    {
+      title: "Business Account",
+      icon: <BusinessRounded />,
+      path: "/business_account",
+    },
+
+    {
+      title: "Chatbot",
+      icon: <ChatRounded />,
+      path: "/chatbot",
+      closeMenu: handleClose,
+    },
+
+    {
+      title: "Campaign",
+      icon: <CampaignRoundedIcon />,
+      path: "/",
+    },
+
+    {
+      title: "Templates",
+      icon: <TopicRounded />,
+      path: "/",
+    },
+
+    {
+      title: "Send Message",
+      icon: <MessageRounded />,
+      path: "/",
+    },
+
+    {
+      title: "Reports",
+      icon: <ReportRounded />,
+      path: "/",
+    },
+
+    {
+      title: "Alerts",
+      icon: <NotificationsRounded />,
+      path: "/",
+    },
+
+    {
+      title: "WorkSpace",
+      icon: <WorkspacePremiumRounded />,
+      path: "/",
+    },
+
+    {
+      title: "Companies",
+      icon: <FactoryRounded />,
+      path: "/",
+    },
+
+    {
+      title: "Users",
+      icon: <Diversity3Rounded />,
+      path: "/",
+    },
+
+    {
+      title: "Teams",
+      icon: <GroupWorkRounded />,
+      path: "/",
+    },
+
+    {
+      title: "Contacts",
+      icon: <ContactsRounded />,
+      path: "/",
+    },
+
+    {
+      title: "Setting",
+      icon: <SettingsSuggestRoundedIcon />,
+      // path: "/setting",
+      nestedItems: [
+        {
+          title: "Companies",
+          icon: <FactoryRounded />,
+          path: "/",
+        },
+
+        {
+          title: "Users",
+          icon: <Diversity3Rounded />,
+          path: "/",
+        },
+
+        {
+          title: "Teams",
+          icon: <GroupWorkRounded />,
+          path: "/",
+        },
+      ],
+    },
+
+    {
+      title: "Tools",
+      icon: <PanToolAltRounded />,
+      path: "/",
+    },
+
+    {
+      title: "Logout",
+      icon: <LogoutRounded />,
+      path: "/login",
+    },
+  ];
+
+  // Open Nested List
+  const [openList, setOpenList] = useState(true);
+
+  const handleClick = () => {
+    setOpenList(!openList);
+  };
 
   return (
     <ThemeProvider theme={theme}>
@@ -258,22 +295,17 @@ export default function SideNav() {
                       minHeight: 48,
                       justifyContent: open ? "initial" : "center",
                       px: 2.5,
-                      borderRadius: "50px",
-                      "&:hover": {
-                        background: "#0288d1",
-                        transition: "0.4s ",
-                      },
+                      borderRadius: "10px",
                     }}
+                    onClick={item.closeMenu}
+                    onDoubleClick={handleClick}
                   >
                     <ListItemIcon
                       sx={{
                         minWidth: "0",
                         mr: open ? 2 : "auto",
                         justifyContent: "center",
-                        "&:hover": {
-                          color: "#fff",
-                          background: "#0288d1",
-                        },
+                        color: "#ad7f51",
                       }}
                     >
                       <Tooltip title={t(`${item.title}`)}>{item.icon}</Tooltip>
@@ -286,7 +318,57 @@ export default function SideNav() {
                       }}
                       primary={t(`${item.title}`)}
                     />
+                    {item.nestedItems && item.nestedItems.length > 0 ? (
+                      openList ? (
+                        <ExpandLess />
+                      ) : (
+                        <ExpandMore />
+                      )
+                    ) : null}
                   </ListItemButton>
+
+                  {/* Nested List */}
+                  {item.nestedItems && item.nestedItems.length > 0 ? (
+                    <Collapse in={openList} timeout="auto" unmountOnExit>
+                      <List component="div" disablePadding>
+                        {item.nestedItems.map((nestedMenu, nestedIndex) => (
+                          <ListItemButton
+                            key={nestedIndex}
+                            onClick={() => navigate(nestedMenu.path)}
+                            selected={
+                              window.location.pathname === nestedMenu.path
+                            }
+                            sx={{ pl: 2, gap: 2 }}
+                          >
+                            <Tooltip
+                              title={t(`${nestedMenu.title}`)}
+                              placement="right"
+                              arrow
+                              disableFocusListener
+                              disableTouchListener
+                            >
+                              <ListItemIcon
+                                sx={{
+                                  fontSize: "16px",
+                                  paddingInlineStart: 5,
+                                  gap: 2,
+                                }}
+                              >
+                                {nestedMenu.icon}
+                              </ListItemIcon>
+                            </Tooltip>
+                            <ListItemText
+                              primary={t(`${nestedMenu.title}`)}
+                              sx={{
+                                fontSize: "16px",
+                                paddingInlineEnd: 10,
+                              }}
+                            />
+                          </ListItemButton>
+                        ))}
+                      </List>
+                    </Collapse>
+                  ) : null}
                 </ListItem>
               );
             })}
