@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "@emotion/styled";
 import {
   Box,
@@ -17,6 +17,8 @@ import {
 import { useDispatch } from "react-redux";
 import { updateData } from "../Functions/cardSlice";
 import ArrowRightRoundedIcon from "@mui/icons-material/ArrowRightRounded";
+import { useTranslation } from "react-i18next";
+import Cookies from "js-cookie";
 
 const currencies = [
   {
@@ -53,13 +55,13 @@ export default function IdentifyMessage() {
       },
       "&:before": {
         backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 24 24"><path fill="${encodeURIComponent(
-          theme.palette.getContrastText(theme.palette.primary.main)
+          theme.palette.getContrastText(theme.palette.success.main)
         )}" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"/></svg>')`,
         left: 12,
       },
       "&:after": {
         backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 24 24"><path fill="${encodeURIComponent(
-          theme.palette.getContrastText(theme.palette.primary.main)
+          theme.palette.getContrastText(theme.palette.success.main)
         )}" d="M19,13H5V11H19V13Z" /></svg>')`,
         right: 12,
       },
@@ -96,6 +98,28 @@ export default function IdentifyMessage() {
     // setTitle("");
   };
 
+  //Language
+  const { t } = useTranslation();
+  const languages = [
+    {
+      lang: "Arabic",
+      code: "ar",
+      dir: "rtl",
+    },
+    {
+      lang: "English",
+      code: "en",
+    },
+  ];
+
+  const currentLanguageCode = Cookies.get("i18next") || "en";
+  const currentLanguage = languages.find((l) => l.code === currentLanguageCode);
+
+  useEffect(() => {
+    document.body.dir = currentLanguage.dir || "ltr";
+    document.title = t("Title");
+  }, [currentLanguage, t]);
+
   return (
     <>
       <Box
@@ -124,19 +148,19 @@ export default function IdentifyMessage() {
             component="h2"
             sx={{
               fontWeight: "bold",
-              borderBottom: "2px solid #0288D1",
+              borderBottom: "2px solid #d1a981 ",
               color: "#333",
             }}
           >
             {" "}
-            Message Type
+            {t("Message Type")}
           </Typography>
 
           <Box>
             <FormGroup>
               <FormControlLabel
                 control={<Android12Switch defaultChecked />}
-                label="Active Menu"
+                label={t("Active Menu")}
               />
             </FormGroup>
           </Box>
@@ -154,15 +178,18 @@ export default function IdentifyMessage() {
             <TextField
               id="outlined-select-currency"
               select
-              label="Select"
-              defaultValue="Main Menu"
-              helperText="Select Message Type"
+              label={t("Select")}
+              defaultValue={t("Main Menu")}
+              helperText={t("Select Message Type")}
               value={category}
               onChange={handleCategoryChange}
             >
               {currencies.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
+                <MenuItem
+                  key={t(`${option.value}`)}
+                  value={t(`${option.value}`)}
+                >
+                  {t(`${option.label}`)}
                 </MenuItem>
               ))}
             </TextField>
@@ -185,19 +212,19 @@ export default function IdentifyMessage() {
             component="h2"
             sx={{
               fontWeight: "bold",
-              borderBottom: "2px solid #0288D1",
+              borderBottom: "2px solid #d1a981",
               color: "#333",
             }}
           >
             {" "}
-            Title
+            {t("Title")}
           </Typography>
 
           <Box>
             <FormGroup>
               <FormControlLabel
                 control={<Android12Switch defaultChecked />}
-                label="Active Menu"
+                label={t("Active Menu")}
               />
             </FormGroup>
           </Box>
@@ -218,14 +245,16 @@ export default function IdentifyMessage() {
                 onChange={handleTitleChange}
                 id="outlined-adornment-weight"
                 startAdornment={
-                  <InputAdornment position="start">Title:</InputAdornment>
+                  <InputAdornment position="start">
+                    {t("Title")}:
+                  </InputAdornment>
                 }
               />
             </FormControl>
           </div>
         </Box>
-        <Button type="submit" varient="outlined">
-          Save <ArrowRightRoundedIcon />
+        <Button type="submit" sx={{ color: "#d1a981" }}>
+          {t("Save")} <ArrowRightRoundedIcon sx={{ color: "#d1a981" }} />
         </Button>
       </Box>
     </>

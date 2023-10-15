@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
 import CardMedia from "@mui/material/CardMedia";
@@ -8,16 +8,42 @@ import Typography from "@mui/material/Typography";
 import { Box, Button } from "@mui/material";
 import { useSelector } from "react-redux";
 // import { useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
+import i18next from "i18next";
+import { useTranslation } from "react-i18next";
 
 export default function MessageCard() {
   const cardData = useSelector((state) => state.card);
   const buttonsData = useSelector((state) => state.data);
   // const navigate = useNavigate();
+
+  //Language
+  const { t } = useTranslation();
+  const languages = [
+    {
+      lang: "Arabic",
+      code: "ar",
+      dir: "rtl",
+    },
+    {
+      lang: "English",
+      code: "en",
+    },
+  ];
+
+  const currentLanguageCode = Cookies.get("i18next") || "en";
+  const currentLanguage = languages.find((l) => l.code === currentLanguageCode);
+
+  useEffect(() => {
+    document.body.dir = currentLanguage.dir || "ltr";
+    document.title = t("Title");
+  }, [currentLanguage, t]);
+
   return (
     <Box>
       <Typography varient="body1" sx={{ p: 1 }}>
         {" "}
-        Build Your Message
+        {t("Build Your Message")}
       </Typography>
       <Card sx={{ maxWidth: 400 }}>
         <CardHeader title={cardData.category} subheader={cardData.title} />
@@ -90,7 +116,7 @@ export default function MessageCard() {
                   variant={button.variant}
                   href={button.path}
                   size={button.size}
-                  sx={{ mt: 1, mb: 1 }}
+                  sx={{ mt: 1, mb: 1, color: "#be9164" }}
                 >
                   {button.text}
                 </Button>
@@ -100,9 +126,13 @@ export default function MessageCard() {
         </CardActions>
       </Card>
 
-      <Button variant="contained" fullWidth sx={{ mt: 1, mb: 1 }}>
+      <Button
+        variant="outlined"
+        fullWidth
+        sx={{ mt: 1, mb: 1, color: "#be9164" }}
+      >
         {" "}
-        Preview Message
+        {t("Preview Message")}
       </Button>
     </Box>
   );

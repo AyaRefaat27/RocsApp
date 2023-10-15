@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Box, Button, Typography } from "@mui/material";
 import BorderColorRoundedIcon from "@mui/icons-material/BorderColorRounded";
 import styled from "@emotion/styled";
@@ -6,6 +6,9 @@ import TextControll from "../Functions/textControll";
 import { useDispatch } from "react-redux";
 import { updateData } from "../Functions/cardSlice";
 import ArrowRightRoundedIcon from "@mui/icons-material/ArrowRightRounded";
+import { useTranslation } from "react-i18next";
+import Cookies from "js-cookie";
+
 const StyledTextarea = styled.textarea`
   padding: 10px;
   font-size: 20px;
@@ -20,6 +23,29 @@ const StyledTextarea = styled.textarea`
 `;
 
 export default function MessageBody() {
+  //Language
+  const { t } = useTranslation();
+  const languages = [
+    {
+      lang: "Arabic",
+      code: "ar",
+      dir: "rtl",
+    },
+    {
+      lang: "English",
+      code: "en",
+    },
+  ];
+
+  const currentLanguageCode = Cookies.get("i18next") || "en";
+  const currentLanguage = languages.find((l) => l.code === currentLanguageCode);
+
+  useEffect(() => {
+    document.body.dir = currentLanguage.dir || "ltr";
+    document.title = t("Title");
+  }, [currentLanguage, t]);
+
+  // Message
   const [messageBody, setMessageBody] = useState("");
   const dispatch = useDispatch();
 
@@ -37,6 +63,7 @@ export default function MessageBody() {
 
     // setMessageBody("");
   };
+
   return (
     <>
       <Box
@@ -63,16 +90,16 @@ export default function MessageBody() {
             component="h2"
             sx={{
               fontWeight: "bold",
-              borderBottom: "2px solid #0288D1",
+              borderBottom: "2px solid #d1a981",
               color: "#333",
             }}
           >
             {" "}
-            Type Your Message
+            {t("Type Your Message")}
           </Typography>
 
           <Box>
-            <BorderColorRoundedIcon color="info" />
+            <BorderColorRoundedIcon sx={{ color: "#be9164" }} />
           </Box>
         </Box>
 
@@ -92,7 +119,7 @@ export default function MessageBody() {
         >
           <div>
             <StyledTextarea
-              placeholder="Enter your Message..."
+              placeholder={t("Enter your Message")}
               rows={5}
               cols={40}
               value={messageBody}
@@ -101,8 +128,8 @@ export default function MessageBody() {
           </div>
           <TextControll />
         </Box>
-        <Button type="submit" varient="outlined">
-          Save <ArrowRightRoundedIcon />
+        <Button type="submit" sx={{ color: "#be9164" }}>
+          {t("Save")} <ArrowRightRoundedIcon />
         </Button>
       </Box>
     </>

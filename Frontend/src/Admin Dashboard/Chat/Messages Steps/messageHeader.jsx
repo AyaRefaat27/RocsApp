@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "@emotion/styled";
 import ArrowRightRoundedIcon from "@mui/icons-material/ArrowRightRounded";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
@@ -19,6 +19,8 @@ import {
 } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { updateData } from "../Functions/cardSlice";
+import { useTranslation } from "react-i18next";
+import Cookies from "js-cookie";
 
 const VisuallyHiddenInput = styled("input")`
   clip: rect(0 0 0 0);
@@ -32,6 +34,28 @@ const VisuallyHiddenInput = styled("input")`
 `;
 
 export default function MessageHeader() {
+  //Language
+  const { t } = useTranslation();
+  const languages = [
+    {
+      lang: "Arabic",
+      code: "ar",
+      dir: "rtl",
+    },
+    {
+      lang: "English",
+      code: "en",
+    },
+  ];
+
+  const currentLanguageCode = Cookies.get("i18next") || "en";
+  const currentLanguage = languages.find((l) => l.code === currentLanguageCode);
+
+  useEffect(() => {
+    document.body.dir = currentLanguage.dir || "ltr";
+    document.title = t("Title");
+  }, [currentLanguage, t]);
+
   const theme = createTheme();
   const Android12Switch = styled(Switch)(() => ({
     padding: 8,
@@ -132,19 +156,19 @@ export default function MessageHeader() {
             component="h2"
             sx={{
               fontWeight: "bold",
-              borderBottom: "2px solid #0288D1",
+              borderBottom: "2px solid #d1a981",
               color: "#333",
             }}
           >
             {" "}
-            Header
+            {t("Header")}
           </Typography>
 
           <Box>
             <FormGroup>
               <FormControlLabel
                 control={<Android12Switch defaultChecked />}
-                label="Active Menu"
+                label={t("Active Menu")}
               />
             </FormGroup>
           </Box>
@@ -164,11 +188,11 @@ export default function MessageHeader() {
               defaultValue="Text"
               value={dataType}
               onChange={handleDataTypeChange}
-              helperText="Select Header Type"
+              helperText={t("Select Header Type")}
             >
-              <MenuItem value="text">Text</MenuItem>
-              <MenuItem value="photo">Photo</MenuItem>
-              <MenuItem value="video">Video</MenuItem>
+              <MenuItem value="text">{t("Text")}</MenuItem>
+              <MenuItem value="photo">{t("Photo")}</MenuItem>
+              <MenuItem value="video">{t("Video")}</MenuItem>
             </TextField>
           </div>
           <div>
@@ -182,7 +206,7 @@ export default function MessageHeader() {
                   onChange={handleTextChange}
                   startAdornment={
                     <InputAdornment position="start">
-                      Message Header:
+                      {t("Header Message")}:
                     </InputAdornment>
                   }
                 />
@@ -197,9 +221,9 @@ export default function MessageHeader() {
                     component="label"
                     variant="outlined"
                     startIcon={<CloudUploadIcon />}
-                    sx={{ m: 1, width: "30ch" }}
+                    sx={{ m: 1, width: "30ch", color: "#be9164" }}
                   >
-                    Upload Image
+                    {t("Upload Image")}
                     <VisuallyHiddenInput
                       type="file"
                       accept="image/*"
@@ -239,10 +263,10 @@ export default function MessageHeader() {
                   <Button
                     component="label"
                     variant="outlined"
-                    sx={{ m: 1, width: "30ch" }}
+                    sx={{ m: 1, width: "30ch", color: "#be9164" }}
                     startIcon={<CloudUploadIcon />}
                   >
-                    Upload Video
+                    {t("Upload Video")}
                     <VisuallyHiddenInput
                       type="file"
                       accept="video/*"
@@ -264,8 +288,8 @@ export default function MessageHeader() {
             )}
           </div>
         </Box>
-        <Button type="submit" varient="outlined">
-          Save <ArrowRightRoundedIcon />
+        <Button type="submit" sx={{ color: "#be9164" }}>
+          {t("Save")} <ArrowRightRoundedIcon />
         </Button>
       </Box>
     </>

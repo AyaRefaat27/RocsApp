@@ -9,6 +9,9 @@ import MessageContent from "../SubPages/messageContent";
 import SendRoundedIcon from "@mui/icons-material/SendRounded";
 import DragHandleRoundedIcon from "@mui/icons-material/DragHandleRounded";
 import AppRegistrationRoundedIcon from "@mui/icons-material/AppRegistrationRounded";
+import { useTranslation } from "react-i18next";
+import Cookies from "js-cookie";
+import { t } from "i18next";
 const StyledTabs = styled((props) => (
   <Tabs
     {...props}
@@ -21,9 +24,9 @@ const StyledTabs = styled((props) => (
     backgroundColor: "transparent",
   },
   "& .MuiTabs-indicatorSpan": {
-    maxWidth: 40,
+    maxWidth: 30,
     width: "100%",
-    backgroundColor: "#2bbde5",
+    backgroundColor: "#d1a981",
   },
 });
 
@@ -37,10 +40,10 @@ const StyledTab = styled((props) => <Tab disableRipple {...props} />)(
     fontWeight: "bold",
     transition: "0.5s",
     "&.Mui-selected": {
-      color: "#0288d1",
+      color: "#be9164",
     },
     "&.Mui-focusVisible": {
-      backgroundColor: "rgba(100, 95, 228, 0.32)",
+      backgroundColor: "#be9164",
     },
   })
 );
@@ -84,6 +87,29 @@ export default function TopSubNav() {
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
+  // Language
+  const { t } = useTranslation();
+  const languages = [
+    {
+      lang: "Arabic",
+      code: "ar",
+      dir: "rtl",
+    },
+    {
+      lang: "English",
+      code: "en",
+    },
+  ];
+
+  const currentLanguageCode = Cookies.get("i18next") || "en";
+  const currentLanguage = languages.find((l) => l.code === currentLanguageCode);
+
+  useEffect(() => {
+    document.body.dir = currentLanguage.dir || "ltr";
+    document.title = t("Title");
+  }, [currentLanguage, t]);
+
   return (
     <Box
       sx={{
@@ -104,19 +130,19 @@ export default function TopSubNav() {
           <StyledTab
             icon={<AppRegistrationRoundedIcon />}
             iconPosition="start"
-            label="Message"
+            label={t("Message")}
             {...a11yProps(0)}
           />
           <StyledTab
             icon={<DragHandleRoundedIcon />}
             iconPosition="start"
-            label="Sub Menus"
+            label={t("Sub Menus")}
             {...a11yProps(1)}
           />
           <StyledTab
             icon={<SendRoundedIcon />}
             iconPosition="start"
-            label="Related Messages"
+            label={t("Related Messages")}
             {...a11yProps(2)}
           />
         </StyledTabs>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { styled } from "@mui/material/styles";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
@@ -9,6 +9,8 @@ import { Box, Button, Typography } from "@mui/material";
 import ArrowRightRoundedIcon from "@mui/icons-material/ArrowRightRounded";
 import { useDispatch } from "react-redux";
 import { updateButtonData } from "../Functions/buttonSlice";
+import { useTranslation } from "react-i18next";
+import Cookies from "js-cookie";
 
 const BootstrapInput = styled(InputBase)(({ theme }) => ({
   "label + &": {
@@ -44,6 +46,28 @@ const BootstrapInput = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function MessageActions() {
+  //Language
+  const { t } = useTranslation();
+  const languages = [
+    {
+      lang: "Arabic",
+      code: "ar",
+      dir: "rtl",
+    },
+    {
+      lang: "English",
+      code: "en",
+    },
+  ];
+
+  const currentLanguageCode = Cookies.get("i18next") || "en";
+  const currentLanguage = languages.find((l) => l.code === currentLanguageCode);
+
+  useEffect(() => {
+    document.body.dir = currentLanguage.dir || "ltr";
+    document.title = t("Title");
+  }, [currentLanguage, t]);
+
   const dispatch = useDispatch();
 
   const [buttons, setButtons] = useState([]);
@@ -120,12 +144,12 @@ export default function MessageActions() {
             component="h2"
             sx={{
               fontWeight: "bold",
-              borderBottom: "2px solid #0288D1",
+              borderBottom: "2px solid #d1a981",
               color: "#333",
             }}
           >
             {" "}
-            Message Actions
+            {t("Message Actions")}
           </Typography>
         </Box>
 
@@ -142,7 +166,7 @@ export default function MessageActions() {
             {/* Button Name */}
             <FormControl sx={{ m: 1 }} variant="standard">
               <InputLabel htmlFor="demo-customized-textbox">
-                Button Name
+                {t("Button Name")}
               </InputLabel>
               <BootstrapInput
                 id="demo-customized-textbox"
@@ -154,7 +178,7 @@ export default function MessageActions() {
             {/* Button Varient */}
             <FormControl sx={{ m: 1, width: "55%" }} variant="standard">
               <InputLabel id="demo-varient-customized-select-label">
-                Button Varient
+                {t("Button Varient")}
               </InputLabel>
               <Select
                 labelId="demo-varient-customized-select-label"
@@ -182,7 +206,7 @@ export default function MessageActions() {
             {/* Size */}
             <FormControl sx={{ m: 1, width: "50%" }} variant="standard">
               <InputLabel id="demo-size-customized-select-label">
-                Button Size
+                {t("Button Size")}
               </InputLabel>
               <Select
                 labelId="demo-size-customized-select-label"
@@ -200,7 +224,7 @@ export default function MessageActions() {
             {/* Path */}
             <FormControl sx={{ m: 1, width: "40%" }} variant="standard">
               <InputLabel id="demo-path-customized-select-label">
-                Button Path
+                {t("Button Path")}
               </InputLabel>
               <Select
                 labelId="demo-path-customized-select-label"
@@ -216,8 +240,12 @@ export default function MessageActions() {
               </Select>
             </FormControl>
           </Box>
-          <Button onClick={handleAddButton} varient="filled" sx={{ m: 1 }}>
-            Add Button
+          <Button
+            onClick={handleAddButton}
+            varient="filled"
+            sx={{ m: 1, color: "#be9164" }}
+          >
+            {t("Add Button")}
           </Button>
         </div>
 
@@ -228,23 +256,28 @@ export default function MessageActions() {
                 variant={button.variant}
                 href={button.path}
                 size={button.size}
-                sx={{ m: 1, p: 1, width: "50ch" }}
+                sx={{ m: 1, p: 1, width: "50ch", color: "#be9164" }}
               >
                 {button.text}
               </Button>
               <Button
                 varient="filled"
-                sx={{ m: 1 }}
+                sx={{ m: 1, color: "#be9164" }}
                 onClick={() => handleRemoveButton(index)}
               >
-                Remove Button
+                {t("Remove Button")}
               </Button>
             </Box>
           );
         })}
 
-        <Button type="submit" varient="outlined">
-          Save <ArrowRightRoundedIcon />
+        <Button
+          type="submit"
+          varient="outlined"
+          color="success"
+          sx={{ color: "#be9164" }}
+        >
+          {t("Save")} <ArrowRightRoundedIcon />
         </Button>
       </Box>
     </>

@@ -16,16 +16,21 @@ import MessageHeader from "../Messages Steps/messageHeader";
 import MessageBody from "../Messages Steps/messageBody";
 import MessageActions from "../Messages Steps/messageActions";
 import MessageFooter from "../Messages Steps/messageFooter";
+import { useTranslation } from "react-i18next";
+import Cookies from "js-cookie";
+import { useTheme } from "@emotion/react";
+
 // import UpcommingRoundedIcon from "@mui/icons-material/UpcommingRoundedIcon";
 const steps = [
   {
-    label: "Identify Message ",
+    label: "Identify Message",
     icon: (
       <BorderColorRoundedIcon
         color="info"
         sx={{
           fontSize: "16px",
           ml: 2,
+          color: "#00aa85",
         }}
       />
     ),
@@ -39,6 +44,7 @@ const steps = [
         sx={{
           fontSize: "16px",
           ml: 2,
+          color: "#00aa85",
         }}
       />
     ),
@@ -52,6 +58,7 @@ const steps = [
         sx={{
           fontSize: "16px",
           ml: 2,
+          color: "#00aa85",
         }}
       />
     ),
@@ -65,6 +72,7 @@ const steps = [
         sx={{
           fontSize: "16px",
           ml: 2,
+          color: "#00aa85",
         }}
       />
     ),
@@ -78,6 +86,7 @@ const steps = [
         sx={{
           fontSize: "16px",
           ml: 2,
+          color: "#00aa85",
         }}
       />
     ),
@@ -104,6 +113,33 @@ export default function VerticalLinearStepper() {
     setActiveStep(step);
   };
 
+  //Language
+  const { t } = useTranslation();
+  const languages = [
+    {
+      lang: "Arabic",
+      code: "ar",
+      dir: "rtl",
+    },
+    {
+      lang: "English",
+      code: "en",
+    },
+  ];
+
+  const currentLanguageCode = Cookies.get("i18next") || "en";
+  const currentLanguage = languages.find((l) => l.code === currentLanguageCode);
+
+  React.useEffect(() => {
+    document.body.dir = currentLanguage.dir || "ltr";
+    document.title = t("Title");
+
+    if (currentLanguageCode === "ar") {
+      document.body.dir = "rtl";
+    }
+  }, [currentLanguage, t, currentLanguageCode]);
+
+  const theme = useTheme();
   return (
     <Box sx={{ maxWidth: "100%", flexGrow: 1 }}>
       <Stepper activeStep={activeStep} orientation="vertical">
@@ -113,31 +149,38 @@ export default function VerticalLinearStepper() {
               onClick={handleStep(index)}
               optional={
                 index === 4 ? (
-                  <Typography variant="caption">Last step</Typography>
+                  <Typography variant="caption">{t("Last step")}</Typography>
                 ) : null
               }
-              sx={{ cursor: "pointer" }}
+              sx={{
+                cursor: "pointer",
+                ml: 3,
+                textAlign: currentLanguageCode === "ar" ? "right" : "left",
+                gap: 2,
+              }}
             >
-              {step.label}
-              {step.icon}
+              {t(`${step.label}`)}
             </StepLabel>
+
             <StepContent>
               <Typography>{step.description}</Typography>
               <Box sx={{ mb: 2, mt: 2 }}>
                 <div>
                   <Button
-                    variant="outlined"
+                    variant="filled"
                     onClick={handleNext}
-                    sx={{ mt: 1, mr: 1 }}
+                    sx={{ mt: 1, mr: 1, color: "#be9164" }}
                   >
-                    {index === steps.length - 1 ? "Finish" : "Continue"}
+                    {index === steps.length - 1
+                      ? `${t("Finish")}`
+                      : `${t("Continue")}`}
                   </Button>
                   <Button
                     disabled={index === 0}
                     onClick={handleBack}
-                    sx={{ mt: 1, mr: 1 }}
+                    sx={{ mt: 1, mr: 1, color: "#be9164" }}
                   >
-                    Back
+                    {t("Back")}
                   </Button>
                 </div>
               </Box>
@@ -154,20 +197,24 @@ export default function VerticalLinearStepper() {
           }}
         >
           <Typography variant="body1">
-            All steps completed - you&apos;re finished your Message.
+            {t("All steps completed - you&apos;re finished your Message.")}
           </Typography>
 
           <Button
             onClick={handleReset}
-            sx={{ mt: 1, mr: 1 }}
-            variant="outlined"
+            sx={{ mt: 1, mr: 1, color: "#be9164" }}
+            variant="filled"
           >
-            Reset
+            {t("Reset")}
           </Button>
         </Paper>
       )}
-      <Button sx={{ mt: 1, mb: 1 }} fullWidth variant="outlined">
-        Save Changes
+      <Button
+        sx={{ mt: 1, mb: 1, color: "#be9164" }}
+        fullWidth
+        variant="outlined"
+      >
+        {t("Save Changes")}
       </Button>
     </Box>
   );

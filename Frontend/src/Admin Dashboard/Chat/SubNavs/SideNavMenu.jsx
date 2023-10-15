@@ -1,7 +1,9 @@
 import { Box, Button, MenuItem, TextField } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SideMenu from "./sideMenu";
 import ListDialog from "../SubPages/listDialog";
+import Cookies from "js-cookie";
+import { useTranslation } from "react-i18next";
 
 const currencies = [
   {
@@ -39,6 +41,28 @@ export default function SideNavMenu() {
     setDialogOpen(false);
   };
 
+  // Language
+  const { t } = useTranslation();
+  const languages = [
+    {
+      lang: "Arabic",
+      code: "ar",
+      dir: "rtl",
+    },
+    {
+      lang: "English",
+      code: "en",
+    },
+  ];
+
+  const currentLanguageCode = Cookies.get("i18next") || "en";
+  const currentLanguage = languages.find((l) => l.code === currentLanguageCode);
+
+  useEffect(() => {
+    document.body.dir = currentLanguage.dir || "ltr";
+    document.title = t("Title");
+  }, [currentLanguage, t]);
+
   return (
     <>
       <Box
@@ -51,13 +75,13 @@ export default function SideNavMenu() {
           <TextField
             id="outlined-select-currency"
             select
-            label="Select"
-            defaultValue="Main Menu"
-            helperText="Select Menu"
+            label={t("Select")}
+            defaultValue={t("Main Menu")}
+            helperText={t("Select Menu")}
           >
             {currencies.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.label}
+              <MenuItem key={t(`${option.value}`)} value={t(`${option.value}`)}>
+                {t(`${option.label}`)}
               </MenuItem>
             ))}
           </TextField>
@@ -66,8 +90,13 @@ export default function SideNavMenu() {
         <SideMenu lists={lists} />
 
         <div>
-          <Button variant="outlined" fullWidth onClick={handleDialogOpen}>
-            New Menu
+          <Button
+            variant="outlined"
+            fullWidth
+            onClick={handleDialogOpen}
+            sx={{ color: "#be9164" }}
+          >
+            {t("New Menu")}
           </Button>
         </div>
         <ListDialog

@@ -39,7 +39,6 @@ export default function MainPage() {
               <Grid xs>
                 <Item sx={{ p: 2 }}>
                   <Box>
-                    {/* <SideMenu /> */}
                     <SideNavMenu />
                   </Box>
                 </Item>
@@ -56,6 +55,20 @@ export default function MainPage() {
               </Grid>
             </Grid>
           </Box>
+
+          {/* <table width="100%">
+            <tr>
+              <td width="20%">
+                <SideNavMenu />
+              </td>
+              <td width="50%">
+                <TopSubNav />
+              </td>
+              <td width="20%">
+                <MessageCard />
+              </td>
+            </tr>
+          </table> */}
         </Box>
       </Box>
     </>

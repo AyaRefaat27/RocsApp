@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -13,6 +13,8 @@ import {
   createTheme,
   useMediaQuery,
 } from "@mui/material";
+import { useTranslation } from "react-i18next";
+import Cookies from "js-cookie";
 
 export default function ListDialog({ open, onClose, onSave }) {
   const [subheader, setSubheader] = useState("");
@@ -59,6 +61,29 @@ export default function ListDialog({ open, onClose, onSave }) {
     setSublist([]);
   };
 
+  // Language
+  const { t } = useTranslation();
+
+  const languages = [
+    {
+      lang: "Arabic",
+      code: "ar",
+      dir: "rtl",
+    },
+    {
+      lang: "English",
+      code: "en",
+    },
+  ];
+
+  const currentLanguageCode = Cookies.get("i18next") || "en";
+  const currentLanguage = languages.find((l) => l.code === currentLanguageCode);
+
+  useEffect(() => {
+    document.body.dir = currentLanguage.dir || "ltr";
+    document.title = t("Title");
+  }, [currentLanguage, t]);
+
   return (
     <div>
       <Dialog
@@ -68,12 +93,12 @@ export default function ListDialog({ open, onClose, onSave }) {
         aria-labelledby="responsive-dialog-title"
       >
         <DialogTitle id="responsive-dialog-title" style={{ cursor: "move" }}>
-          Create Your Bot Lists
+          {t("Create Your Bot Lists")}
         </DialogTitle>
 
         <DialogContent>
           <DialogContentText>
-            ChatBot List
+            {t("ChatBot List")}
             <Box
               sx={{
                 "& .MuiTextField-root": { m: 1, width: "100%" },
@@ -93,7 +118,7 @@ export default function ListDialog({ open, onClose, onSave }) {
                     required
                     startAdornment={
                       <InputAdornment position="start">
-                        ChatBot Name:
+                        {t("ChatBot Name")}:
                       </InputAdornment>
                     }
                   />
@@ -109,7 +134,7 @@ export default function ListDialog({ open, onClose, onSave }) {
                     required
                     startAdornment={
                       <InputAdornment position="start">
-                        List Item Name:
+                        {t("List Item Name")}:
                       </InputAdornment>
                     }
                   />
@@ -132,18 +157,18 @@ export default function ListDialog({ open, onClose, onSave }) {
                     required
                     startAdornment={
                       <InputAdornment position="start">
-                        List Sub-Item Name:
+                        {t("List Sub-Item Name")}:
                       </InputAdornment>
                     }
                   />
                 </FormControl>
                 <Button
-                  varient="contained"
-                  sx={{ m: 1 }}
+                  varient="outlined"
+                  sx={{ m: 1, color: "#be9164" }}
                   onClick={handleAddSublistItem}
                   disabled={!sublistItemName}
                 >
-                  Add Sub-Item
+                  {t("Add Sub-Item")}
                 </Button>
 
                 {sublist.map((item, index) => {
@@ -158,15 +183,20 @@ export default function ListDialog({ open, onClose, onSave }) {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} varient="filled">
-            Cancel
+          <Button
+            onClick={handleClose}
+            varient="filled"
+            sx={{ color: "#be9164" }}
+          >
+            {t("Cancel")}
           </Button>
           <Button
             onClick={handleSaveList}
             disabled={!subheader || !itemName}
             varient="outlined"
+            sx={{ color: "#be9164" }}
           >
-            Save
+            {t("Save")}
           </Button>
         </DialogActions>
       </Dialog>
