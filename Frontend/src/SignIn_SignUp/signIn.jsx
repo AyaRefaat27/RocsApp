@@ -16,6 +16,12 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../Context/authContext.js";
 import { Container } from "@mui/material";
 
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+
 function Copyright(props) {
   const navigate = useNavigate();
   return (
@@ -41,10 +47,20 @@ function Copyright(props) {
 
 const defaultTheme = createTheme();
 export default function SignIn() {
+  const [open, setOpen] = useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   const navigate = useNavigate();
 
   const [credentials, setCredentials] = useState({
-    email: undefined,
+    username: undefined,
     password: undefined,
   });
 
@@ -91,19 +107,25 @@ export default function SignIn() {
         component="main"
         sx={{
           height: "100vh",
-          margin: "50px auto",
+          // height: "100% auto",
+          backgroundImage:
+            "url(https://media.istockphoto.com/id/1478407211/photo/woman-using-computer-chatting-with-an-intelligent-artificial-intelligence-asks-for-the.jpg?s=612x612&w=0&k=20&c=xlxwKSoc_MSf27VZJKlyhM2sXuEBhvORdJHRULr8Esg=)",
+          backgroundRepeat: "no-repeat",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
         }}
       >
         <CssBaseline />
         <Container
           component="main"
-          maxWidth="xs"
+          maxWidth="sm"
           sx={{
             border: "1px solid #fff",
             boxShadow: "0 0 10px #eee",
             borderRadius: "10px",
             height: "600px",
             background: "#fff",
+            margin: "50px auto",
           }}
         >
           <CssBaseline />
@@ -115,7 +137,7 @@ export default function SignIn() {
               alignItems: "center",
             }}
           >
-            <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+            <Avatar sx={{ m: 1, background: "#d1a981", color: "#fff" }}>
               <LockOutlinedIcon />
             </Avatar>
             <Typography component="h1" variant="h5">
@@ -131,10 +153,10 @@ export default function SignIn() {
                 margin="normal"
                 required
                 fullWidth
-                id="email"
-                label="Email Address"
-                name="email"
-                autoComplete="email"
+                id="username"
+                label="Username"
+                name="username"
+                autoComplete="username"
                 autoFocus
                 onChange={handleChange}
               />
@@ -160,28 +182,44 @@ export default function SignIn() {
                 sx={{
                   mt: 3,
                   mb: 2,
-                  background: "linear-gradient(to right, #ffafbd, #ffc3a0)",
-                  color: "#fff",
                   fontWeight: "bold",
+                  background: "#d1a981",
+                  color: "#fff",
                 }}
               >
                 Sign In
               </Button>
               <Grid container>
                 <Grid item xs>
-                  <Link href="#" variant="body2">
+                  <Link href="#" variant="body2" onClick={handleClickOpen}>
                     Forgot password?
                   </Link>
                 </Grid>
-                <Grid item>
-                  <Link
-                    href="#"
-                    variant="body2"
-                    onClick={() => navigate("/register")}
-                  >
-                    {"Don't have an account? Sign Up"}
-                  </Link>
-                </Grid>
+
+                <Dialog
+                  open={open}
+                  onClose={handleClose}
+                  fullWidth
+                  sx={{ margin: "50px auto" }}
+                >
+                  <DialogTitle>Forget Password</DialogTitle>
+                  <DialogContent>
+                    <DialogContentText>Enter your Email</DialogContentText>
+                    <TextField
+                      autoFocus
+                      margin="dense"
+                      id="name"
+                      label="Email Address"
+                      type="email"
+                      fullWidth
+                      variant="standard"
+                    />
+                  </DialogContent>
+                  <DialogActions>
+                    <Button onClick={handleClose}>Cancel</Button>
+                    <Button onClick={handleClose}>Send</Button>
+                  </DialogActions>
+                </Dialog>
               </Grid>
             </Box>
           </Box>

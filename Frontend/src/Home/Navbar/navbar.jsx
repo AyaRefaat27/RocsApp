@@ -12,6 +12,7 @@ import {
   Button,
   Chip,
   Container,
+  Divider,
   Drawer,
   List,
   ListItem,
@@ -48,36 +49,9 @@ function Navbar() {
     setMobileMenu({ ...mobileMenu, [anchor]: open });
   };
 
-  const list = (anchor) => (
-    <Box
-      sx={{ width: anchor === "top" || anchor === "bottom" ? "auto" : 250 }}
-      role="presentation"
-      onClick={toggleDrawer(anchor, false)}
-      onKeyDown={toggleDrawer(anchor, false)}
-    >
-      <List>
-        {["Home", "Call Us", "Contact-Us", "Email-Us"].map((text, index) => {
-          return (
-            <ListItem key={text} disablePadding>
-              <ListItemButton>
-                <ListItemIcon>
-                  {index === 0 && <Home />}
-                  {index === 1 && <Call />}
-                  {index === 2 && <ContactPage />}
-                  {index === 3 && <EmailRounded />}
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItemButton>
-            </ListItem>
-          );
-        })}
-      </List>
-    </Box>
-  );
   const theme = createTheme();
   const NavLink = styled(Typography)(() => ({
     fontSize: "18px",
-    color: "#fff",
     fontWeight: "bold",
     cursor: "pointer",
     // "&:hover": {
@@ -108,6 +82,7 @@ function Navbar() {
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
+    position: "sticky",
     padding: theme.spacing(5),
     [theme.breakpoints.down("md")]: {
       padding: theme.spacing(2),
@@ -122,9 +97,38 @@ function Navbar() {
     },
   }));
 
+  const list = (anchor) => (
+    <Box
+      sx={{ width: anchor === "top" || anchor === "bottom" ? "auto" : 250 }}
+      role="presentation"
+      onClick={toggleDrawer(anchor, false)}
+      onKeyDown={toggleDrawer(anchor, false)}
+    >
+      <List>
+        {["Home", "Call Us", "Contact-Us", "Email-Us"].map((text, index) => {
+          return (
+            <>
+              <ListItem key={text} disablePadding>
+                <ListItemButton>
+                  <ListItemIcon>
+                    {index === 0 && <Home />}
+                    {index === 1 && <Call />}
+                    {index === 2 && <ContactPage />}
+                    {index === 3 && <EmailRounded />}
+                  </ListItemIcon>
+                  <ListItemText primary={text} />
+                </ListItemButton>
+              </ListItem>
+            </>
+          );
+        })}
+      </List>
+    </Box>
+  );
+
   return (
     <>
-      <NavbarContainer>
+      <NavbarContainer sx={{ position: "static" }}>
         <Box
           sx={{
             display: "flex",
@@ -134,15 +138,15 @@ function Navbar() {
           }}
         >
           <Box>
-            <CustomMenuIcon onClick={toggleDrawer("left", true)} />
+            <NavbarLogo src="./assets/images/logo1.png" />
+            <CustomMenuIcon onClick={toggleDrawer("right", true)} />
             <Drawer
-              anchor="left"
-              open={mobileMenu["left"]}
-              onClose={toggleDrawer("left", false)}
+              anchor="right"
+              open={mobileMenu["right"]}
+              onClose={toggleDrawer("right", false)}
             >
-              {list("left")}
+              {list("right")}
             </Drawer>
-            <NavbarLogo src="./assets/images/logo2.png" />
           </Box>
 
           <NavBarLinkBox>
@@ -215,7 +219,7 @@ function Navbar() {
               />
               <Button
                 variant="contained"
-                color="primary"
+                color="success"
                 onClick={handleLogout}
               >
                 Logout
@@ -225,14 +229,16 @@ function Navbar() {
             <>
               <Button
                 variant="outlined"
-                color="primary"
+                color="success"
+                size="small"
                 onClick={() => navigate("/login")}
               >
                 Login
               </Button>
               <Button
                 variant="contained"
-                color="primary"
+                color="success"
+                size="small"
                 onClick={() => navigate("/register")}
               >
                 Register

@@ -89,13 +89,9 @@ export default function SignUp() {
         component="main"
         sx={{
           height: "100% auto",
-
-          backgroundImage: "url(https://source.unsplash.com/random?wallpapers)",
+          backgroundImage:
+            "url(https://media.istockphoto.com/id/1248678353/photo/close-up-man-hand-type-on-keyboard-laptop-to-use-search-engine-optimization-tools-for-finding.jpg?s=612x612&w=0&k=20&c=kpdvJFrl72wtdvJswZ5rIvMSlHtPu2V-DbsWeiXSSQ8=)",
           backgroundRepeat: "no-repeat",
-          backgroundColor: (t) =>
-            t.palette.mode === "light"
-              ? t.palette.grey[50]
-              : t.palette.grey[900],
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
@@ -104,13 +100,14 @@ export default function SignUp() {
 
         <Container
           component="main"
-          maxWidth="xs"
+          maxWidth="sm"
           sx={{
             border: "1px solid #fff",
             boxShadow: "0 0 10px #eee",
             borderRadius: "10px",
-            height: "800px",
+            height: "100% auto",
             background: "#fff",
+            margin: "50px auto",
           }}
         >
           <CssBaseline />
@@ -122,7 +119,7 @@ export default function SignUp() {
               alignItems: "center",
             }}
           >
-            <Avatar sx={{ m: 1, bgcolor: "info.main" }}>
+            <Avatar sx={{ m: 1, background: "#d1a981", color: "#fff" }}>
               <LockOutlinedIcon />
             </Avatar>
             <Typography component="h1" variant="h5">
@@ -135,7 +132,7 @@ export default function SignUp() {
               sx={{ mt: 3 }}
             >
               <Grid container spacing={2}>
-                <Grid item xs={12}>
+                <Grid item xs={12} sm={6}>
                   <TextField
                     autoComplete="given-name"
                     name="name"
@@ -147,7 +144,8 @@ export default function SignUp() {
                     onChange={handleChange}
                   />
                 </Grid>
-                <Grid item xs={12}>
+
+                <Grid item xs={12} sm={6}>
                   <TextField
                     autoComplete="given-name"
                     name="username"
@@ -159,6 +157,7 @@ export default function SignUp() {
                     onChange={handleChange}
                   />
                 </Grid>
+
                 <Grid item xs={12}>
                   <TextField
                     required
@@ -206,51 +205,22 @@ export default function SignUp() {
               <Button
                 type="submit"
                 fullWidth
-                color="info"
                 variant="contained"
                 sx={{
                   mt: 3,
                   mb: 2,
+                  background: "#d1a981",
                   color: "#fff",
                   fontWeight: "bold",
                 }}
               >
                 Sign Up
               </Button>
-              <Grid container justifyContent="flex-end">
-                <Grid item>
-                  <Link
-                    href=""
-                    variant="body2"
-                    onClick={() => navigate("/login")}
-                  >
-                    Already have an account? Sign in
-                  </Link>
-                </Grid>
-              </Grid>
             </Box>
           </Box>
 
-          <Copyright sx={{ mt: 5 }} />
+          <Copyright sx={{ mt: 5, mb: 5 }} />
         </Container>
-
-        {/* <Grid
-          item
-          xs={false}
-          sm={4}
-          md={7}
-          sx={{
-            backgroundImage:
-              "url(https://source.unsplash.com/random?wallpapers)",
-            backgroundRepeat: "no-repeat",
-            backgroundColor: (t) =>
-              t.palette.mode === "light"
-                ? t.palette.grey[50]
-                : t.palette.grey[900],
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-          }}
-        /> */}
       </Grid>
     </ThemeProvider>
   );
