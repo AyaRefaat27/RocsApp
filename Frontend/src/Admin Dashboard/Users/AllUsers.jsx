@@ -1,15 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "../../App.css";
 import Avatar from "@mui/material/Avatar";
-import {
-  Box,
-  Chip,
-  FormControl,
-  MenuItem,
-  Select,
-  Switch,
-  Tooltip,
-} from "@mui/material";
+import { Switch, Tooltip } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import Cookies from "js-cookie";
 import DataTable from "../Shared/DataTable";
@@ -113,7 +105,7 @@ export default function AllUsers() {
 
     {
       field: "username",
-      headerName: `${t("Username")}`,
+      headerName: `${t("UserName")}`,
       type: "string",
       width: 200,
       align: "left",
@@ -149,7 +141,7 @@ export default function AllUsers() {
 
     {
       field: "verified",
-      headerName: "Verified",
+      headerName: `${t("Verified")}`,
       width: 100,
       type: "boolean",
     },
