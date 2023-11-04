@@ -16,7 +16,7 @@ import FootPrint from "../Admin Dashboard/FootPrint/FootPrint";
 export default function Routers() {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/dashboard" />} />
+      <Route path="/" element={<Navigate to="/login" />} />
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/home" element={<Layout />} />
       <Route path="/business_account" element={<Profile />} />
