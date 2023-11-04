@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -12,15 +12,19 @@ import Grid from "@mui/material/Grid";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../Context/authContext.js";
+import { resolvePath, useNavigate } from "react-router-dom";
 import { Container } from "@mui/material";
+import axios from "axios";
+import api from "../Context/api.js";
+import { AuthContext } from "../Context/authContext.js";
 
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import { useTranslation } from "react-i18next";
+import Cookies from "js-cookie";
 
 function Copyright(props) {
   const navigate = useNavigate();
@@ -60,8 +64,8 @@ export default function SignIn() {
   const navigate = useNavigate();
 
   const [credentials, setCredentials] = useState({
-    username: undefined,
-    password: undefined,
+    UserName: "",
+    password: "",
   });
 
   const { dispatch } = useContext(AuthContext);
@@ -77,7 +81,7 @@ export default function SignIn() {
     e.preventDefault();
     dispatch({ type: "LOGIN_START" });
     try {
-      const res = await fetch("http://localhost:3001/auth/login", {
+      const res = await fetch("http://localhost:3002/api/user/login", {
         method: "post",
         headers: {
           "content-type": "application/json",
@@ -94,12 +98,42 @@ export default function SignIn() {
       // console.log(result.data);
       dispatch({ type: "LOGIN_SUCCESS", payload: result.data });
       navigate("/");
+      alert("Welcome to Your Account");
+      console.log(result);
+      localStorage.setItem("creationUserID", result.UserID);
+      localStorage.setItem("CompanyID", result.CompanyID);
     } catch (error) {
+      if (!error?.res?.status === 400) {
+        alert("Missing Username or Password");
+      } else {
+        alert("Login Failed");
+      }
       dispatch({ type: "LOGIN_FAILURE", payload: error.message });
       navigate("/login");
     }
   };
 
+  // Language
+  const { t } = useTranslation();
+  const languages = [
+    {
+      lang: "Arabic",
+      code: "ar",
+      dir: "rtl",
+    },
+    {
+      lang: "English",
+      code: "en",
+    },
+  ];
+
+  const currentLanguageCode = Cookies.get("i18next") || "en";
+  const currentLanguage = languages.find((l) => l.code === currentLanguageCode);
+
+  useEffect(() => {
+    document.body.dir = currentLanguage.dir || "ltr";
+    document.title = t("Title");
+  }, [currentLanguage, t]);
   return (
     <ThemeProvider theme={defaultTheme}>
       <Grid
@@ -141,7 +175,7 @@ export default function SignIn() {
               <LockOutlinedIcon />
             </Avatar>
             <Typography component="h1" variant="h5">
-              Sign in
+              {t("Login")}
             </Typography>
             <Box
               component="form"
@@ -153,28 +187,28 @@ export default function SignIn() {
                 margin="normal"
                 required
                 fullWidth
-                id="username"
-                label="Username"
-                name="username"
-                autoComplete="username"
+                id="UserName"
+                label={t("UserName")}
+                name="UserName"
+                autoComplete="UserName"
                 autoFocus
                 onChange={handleChange}
               />
               <TextField
                 margin="normal"
-                required
+                // required
                 fullWidth
                 name="password"
-                label="Password"
+                label={t("Password")}
                 type="password"
                 id="password"
                 autoComplete="current-password"
                 onChange={handleChange}
               />
-              <FormControlLabel
+              {/* <FormControlLabel
                 control={<Checkbox value="remember" color="primary" />}
                 label="Remember me"
-              />
+              /> */}
               <Button
                 type="submit"
                 fullWidth
@@ -187,12 +221,12 @@ export default function SignIn() {
                   color: "#fff",
                 }}
               >
-                Sign In
+                {t("Login")}
               </Button>
               <Grid container>
                 <Grid item xs>
                   <Link href="#" variant="body2" onClick={handleClickOpen}>
-                    Forgot password?
+                    {t("Forgot Password?")}
                   </Link>
                 </Grid>
 
@@ -202,22 +236,24 @@ export default function SignIn() {
                   fullWidth
                   sx={{ margin: "50px auto" }}
                 >
-                  <DialogTitle>Forget Password</DialogTitle>
+                  <DialogTitle>{t("Forgot Password?")}</DialogTitle>
                   <DialogContent>
-                    <DialogContentText>Enter your Email</DialogContentText>
+                    <DialogContentText>
+                      {t("Enter your Email")}
+                    </DialogContentText>
                     <TextField
                       autoFocus
                       margin="dense"
                       id="name"
-                      label="Email Address"
+                      label={t("Email")}
                       type="email"
                       fullWidth
                       variant="standard"
                     />
                   </DialogContent>
                   <DialogActions>
-                    <Button onClick={handleClose}>Cancel</Button>
-                    <Button onClick={handleClose}>Send</Button>
+                    <Button onClick={handleClose}>{t("Cancel")}</Button>
+                    <Button onClick={handleClose}>{t("Send")}</Button>
                   </DialogActions>
                 </Dialog>
               </Grid>
