@@ -1,19 +1,31 @@
 import React, { useEffect, useState } from "react";
 import "../../App.css";
 import Avatar from "@mui/material/Avatar";
-import { Box, FormControl, MenuItem, Select } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import Cookies from "js-cookie";
-import DataTable from "../Shared/DataTable";
-import { companiesRows } from "../Shared/data";
-import { GridActionsCellItem } from "@mui/x-data-grid";
-import {
-  DeleteSweepRounded,
-  EditNoteRounded,
-  VisibilityRounded,
-} from "@mui/icons-material";
+import { DataGrid, GridActionsCellItem, GridToolbar } from "@mui/x-data-grid";
+import ViewDialog from "./View/ViewDialog";
 
 export default function AllCompanies() {
+  const [viewDialog, setViewDialog] = useState(false);
+  const [companies, setCompanies] = useState([]);
+  const [selectedRows, setSelectedRows] = useState([]);
+  var [selectedCompany, setSelectedCompany] = useState({});
+  const getRowId = (row) => row.CompanyID;
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
+  const userID = localStorage.getItem("creationUserID");
+
+  const handleViewDialogOpen = (event, params) => {
+    setSelectedCompany(params.row);
+    setViewDialog(true);
+  };
+
+  const handleViewDialogClose = () => {
+    setViewDialog(false);
+    setSelectedCompany({});
+  };
+
   // Language
   const { t } = useTranslation();
   const languages = [
@@ -36,32 +48,9 @@ export default function AllCompanies() {
     document.title = t("Title");
   }, [currentLanguage, t]);
 
-  const [branche, setBranche] = useState("");
-
-  const handleChange = (event) => {
-    setBranche(event.target.value);
-  };
-
-  const brancheSelect = () => {
-    return (
-      <FormControl sx={{ m: 1, minWidth: 130 }}>
-        <Select
-          value={branche}
-          onChange={handleChange}
-          displayEmpty
-          inputProps={{ "aria-label": "Without label" }}
-        >
-          <MenuItem value="">Facebook</MenuItem>
-          <MenuItem value="meta">Meta</MenuItem>
-          <MenuItem value="whatsapp">Whatsapp</MenuItem>
-          <MenuItem value="instagram">Instagram</MenuItem>
-        </Select>
-      </FormControl>
-    );
-  };
-
   const columns = [
-    { field: "id", headerName: `${t("ID")}`, width: 70 },
+    { field: "CompanyID", headerName: `${t("ID")}`, width: 70 },
+
     {
       field: "photo",
       headerName: `${t("Photo")}`,
@@ -76,29 +65,33 @@ export default function AllCompanies() {
         );
       },
     },
+
     {
-      field: "name",
-      headerName: `${t("Company Name")}`,
-      width: 150,
+      field: "NameEnglish",
+      headerName: `${t("Company English Name")}`,
+      width: 200,
       align: "left",
       headerAlign: "left",
-    },
-    {
-      field: "location",
-      headerName: `${t("Location")}`,
-      width: 150,
     },
 
     {
-      field: "phone",
+      field: "NameArabic",
+      headerName: `${t("Company Arabic Name")}`,
+      width: 200,
+      align: "left",
+      headerAlign: "left",
+    },
+
+    {
+      field: "Phone",
       headerName: `${t("Phone")}`,
       type: "number",
-      width: 150,
+      width: 200,
       align: "left",
       headerAlign: "left",
     },
     {
-      field: "email",
+      field: "Mail",
       headerName: `${t("Email")}`,
       type: "string",
       width: 200,
@@ -106,13 +99,13 @@ export default function AllCompanies() {
       headerAlign: "left",
     },
     {
-      field: "address",
-      headerName: `${t("Address")}`,
+      field: "CountryID",
+      headerName: `${t("Country")}`,
       width: 150,
     },
     {
-      field: "employess",
-      headerName: `${t("Employees")}`,
+      field: "City",
+      headerName: `${t("City")}`,
       type: "number",
       width: 150,
       align: "left",
@@ -120,27 +113,33 @@ export default function AllCompanies() {
     },
 
     {
-      field: "branches",
-      headerName: `${t("Company Branches")}`,
-      width: 170,
+      field: "ParentCompanyID",
+      headerName: `${t("Parent Company")}`,
+      width: 200,
       align: "left",
       headerAlign: "left",
-      renderCell: () => {
-        return brancheSelect();
-      },
     },
 
     {
       field: "actions",
       headerName: `${t("Actions")}`,
-      width: 150,
+      width: 300,
       cellClassName: "actions",
-      renderCell: () => {
+      renderCell: (params) => {
         return (
           <>
             <GridActionsCellItem
               icon={
-                <VisibilityRounded color="info" sx={{ fontSize: "25px" }} />
+                <Button
+                  variant="contained"
+                  size="small"
+                  color="info"
+                  onClick={(event) => {
+                    handleViewDialogOpen(event, params);
+                  }}
+                >
+                  View
+                </Button>
               }
               label="View"
               className="textPrimary"
@@ -149,16 +148,14 @@ export default function AllCompanies() {
 
             <GridActionsCellItem
               icon={
-                <EditNoteRounded color="success" sx={{ fontSize: "25px" }} />
-              }
-              label="Edit"
-              className="textPrimary"
-              color="inherit"
-            />
-
-            <GridActionsCellItem
-              icon={
-                <DeleteSweepRounded color="error" sx={{ fontSize: "25px" }} />
+                <Button
+                  variant="outlined"
+                  size="small"
+                  color="error"
+                  onClick={() => deleteCompany(params.row.CompanyID)}
+                >
+                  Delete
+                </Button>
               }
               label="Delete"
               color="inherit"
@@ -167,67 +164,101 @@ export default function AllCompanies() {
         );
       },
     },
-    // {
-    //   field: "actions",
-    //   headerName: `${t("Actions")}`,
-    //   width: 150,
-    //   cellClassName: "actions",
-    //   renderCell: () => {
-    //     return (
-    //       <>
-    //         <GridActionsCellItem
-    //           icon={
-    //             <VisibilityRounded color="info" sx={{ fontSize: "25px" }} />
-    //           }
-    //           label="View"
-    //           className="textPrimary"
-    //           color="inherit"
-    //         />
-
-    //         <GridActionsCellItem
-    //           icon={
-    //             <EditNoteRounded color="success" sx={{ fontSize: "25px" }} />
-    //           }
-    //           label="Edit"
-    //           className="textPrimary"
-    //           color="inherit"
-    //         />
-
-    //         <GridActionsCellItem
-    //           icon={
-    //             <DeleteSweepRounded color="error" sx={{ fontSize: "25px" }} />
-    //           }
-    //           label="Delete"
-    //           color="inherit"
-    //         />
-    //       </>
-    //     );
-    //   },
-    // },
   ];
 
-  const rows = [
-    {
-      id: 1,
-      name: "Facebook",
-      location: "Calefornia",
-      phone: 38292114,
-      address: "USA",
-      employess: 2100,
-    },
-    {
-      id: 2,
-      name: "Facebook",
-      location: "Calefornia",
-      phone: 38292114,
-      address: "USA",
-      employess: 2100,
-    },
-  ];
+  // Get all Companies
+  useEffect(() => {
+    const fetchCompanies = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:3002/api/company?userID=${userID}`
+        );
+        const data = await response.json();
+
+        setCompanies(data);
+        console.log(data);
+      } catch (error) {
+        console.error("Error fetching companies:", error);
+      }
+    };
+
+    fetchCompanies();
+  }, []);
+
+  //Delete Company
+  const deleteCompany = async (CompanyID) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3002/api/company?companyID=${CompanyID}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (response.ok) {
+        // Company deleted successfully, update the state to remove the deleted company
+        setCompanies(
+          companies.filter((company) => company.CompanyID !== CompanyID)
+        );
+        alert("Company Deleted");
+      } else {
+        console.error("Error deleting company");
+      }
+    } catch (error) {
+      console.error("Error deleting company:", error);
+    }
+  };
 
   return (
     <>
-      <DataTable columns={columns} rows={companiesRows} />
+      <Box
+        sx={{
+          height: "100% auto",
+          width: "100%",
+          m: 1,
+          p: 2,
+        }}
+      >
+        <DataGrid
+          rows={companies}
+          columns={columns}
+          getRowId={getRowId}
+          initialState={{
+            pagination: {
+              paginationModel: {
+                pageSize: 10,
+              },
+            },
+          }}
+          checkboxSelection
+          onRowSelectionModelChange={function (ids) {
+            console.log(companies);
+            console.log(ids);
+            const selectedIDs = new Set(ids);
+            const selectedRows = companies.filter((row) =>
+              selectedIDs.has(row)
+            );
+
+            setSelectedRows(selectedRows);
+          }}
+          slots={{ toolbar: GridToolbar }}
+          slotProps={{
+            toolbar: {
+              showQuickFilter: true,
+              quickFilterProps: { debounceMs: 500 },
+            },
+          }}
+          pageSizeOptions={[5]}
+          disableColumnSelector
+          disableDensitySelector
+        />
+
+        <ViewDialog
+          open={viewDialog}
+          onClose={handleViewDialogClose}
+          company={selectedCompany}
+        />
+      </Box>
     </>
   );
 }

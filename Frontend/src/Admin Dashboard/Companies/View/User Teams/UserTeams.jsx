@@ -1,17 +1,13 @@
 import React, { useEffect, useState } from "react";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import { useTranslation } from "react-i18next";
 import Tab from "@mui/material/Tab";
 import PropTypes from "prop-types";
 import Tabs from "@mui/material/Tabs";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material/styles";
-import { useTranslation } from "react-i18next";
-import Cookies from "js-cookie";
-import { t } from "i18next";
-import { AddHomeWorkRounded, DomainAddRounded } from "@mui/icons-material";
+import { ContactPageRounded, ContactsRounded } from "@mui/icons-material";
 
-import AddCompany from "./AddCompany";
-import AllCompanies from "./AllCompanies";
 const StyledTabs = styled((props) => (
   <Tabs
     {...props}
@@ -80,45 +76,17 @@ function a11yProps(index) {
     "aria-controls": `simple-tabpanel-${index}`,
   };
 }
-
-export default function Companies() {
-  const [value, setValue] = React.useState(0);
+export default function UserTeams({ userTeams }) {
+  const [value, setValue] = useState(0);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-
   // Language
   const { t } = useTranslation();
-  const languages = [
-    {
-      lang: "Arabic",
-      code: "ar",
-      dir: "rtl",
-    },
-    {
-      lang: "English",
-      code: "en",
-    },
-  ];
-
-  const currentLanguageCode = Cookies.get("i18next") || "en";
-  const currentLanguage = languages.find((l) => l.code === currentLanguageCode);
-
-  useEffect(() => {
-    document.body.dir = currentLanguage.dir || "ltr";
-    document.title = t("Title");
-  }, [currentLanguage, t]);
 
   return (
-    <Box
-      sx={{
-        marginTop: "10px",
-        background: "#fff",
-        height: "100% auto",
-        borderRadius: "10px",
-      }}
-    >
+    <Box>
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
         <StyledTabs
           value={value}
@@ -128,24 +96,34 @@ export default function Companies() {
           aria-label="scrollable auto tabs example"
         >
           <StyledTab
-            icon={<DomainAddRounded />}
+            icon={<ContactPageRounded />}
             iconPosition="start"
-            label={t("Companies")}
+            label={t("User Teams")}
             {...a11yProps(0)}
           />
           <StyledTab
-            icon={<AddHomeWorkRounded />}
+            icon={<ContactsRounded />}
             iconPosition="start"
-            label={t("Add Company")}
+            label={t("Add User")}
             {...a11yProps(1)}
+          />
+          <StyledTab
+            icon={<ContactsRounded />}
+            iconPosition="start"
+            label={t("Add Team")}
+            {...a11yProps(2)}
           />
         </StyledTabs>
       </Box>
+
       <CustomTabPanel value={value} index={0}>
-        <AllCompanies />
+        user teams
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
-        <AddCompany />
+        add user
+      </CustomTabPanel>
+      <CustomTabPanel value={value} index={2}>
+        add team
       </CustomTabPanel>
     </Box>
   );

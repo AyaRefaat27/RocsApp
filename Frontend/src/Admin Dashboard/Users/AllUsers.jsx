@@ -1,51 +1,69 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "../../App.css";
 import Avatar from "@mui/material/Avatar";
 import { Switch, Tooltip } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import Cookies from "js-cookie";
-import DataTable from "../Shared/DataTable";
-import { usersRows } from "../Shared/data";
-import { GridActionsCellItem } from "@mui/x-data-grid";
-import {
-  ConnectWithoutContactRounded,
-  ContactPhoneRounded,
-  DeleteSweepRounded,
-  EditNoteRounded,
-  GroupRounded,
-  VisibilityRounded,
-} from "@mui/icons-material";
-import EditUser from "../User Profile/EditUser";
-import ContactsDialog from "./ContactsDialog";
-import TeamsDialog from "./TeamsDialog";
+import { GridActionsCellItem, DataGrid, GridToolbar } from "@mui/x-data-grid";
+import { DeleteSweepRounded, VisibilityRounded } from "@mui/icons-material";
+
+import { Box } from "@mui/material";
+import ViewUserDetails from "./ViewUserDetails";
 
 export default function AllUsers() {
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [contactDialogOpen, setContactDialogOpen] = useState(false);
-  const [teamDialogOpen, setTeamDialogOpen] = useState(false);
+  const [viewDialog, setViewDialog] = useState(false);
 
-  const handleDialogOpen = () => {
-    setDialogOpen(true);
+  const [users, setUsers] = useState([]);
+  const [selectedRows, setSelectedRows] = useState([]);
+  var [selectedUser, setSelectedUser] = useState({});
+  const getRowId = (row) => row.UserID;
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
+
+  // const [teamDialogOpen, setTeamDialogOpen] = useState(false);
+  // const [contactDialogOpen, setContactDialogOpen] = useState(false);
+  // const [dialogOpen, setDialogOpen] = useState(false);
+
+  // const handleDialogOpen = () => {
+  //   setDialogOpen(true);
+  // };
+
+  // const handleDialogClose = () => {
+  //   setDialogOpen(false);
+  // };
+
+  // const handleContactDialogOpen = (event, params) => {
+  //   // console.log(event);
+  //   // console.log(params);
+  //   setSelectedUser(params.row);
+  //   // selectedUser = params.row;
+  //   // console.log(selectedUser.UserID);
+  //   // console.log(selectedUser);
+  //   // console.log(selectedRows);
+  //   setContactDialogOpen(true);
+  // };
+
+  // const handleContactDialogClose = () => {
+  //   setContactDialogOpen(false);
+  //   setSelectedUser({});
+  //   // console.log(selectedUser);
+  // };
+
+  // const handleTeamDialogOpen = () => {
+  //   setTeamDialogOpen(true);
+  // };
+
+  // const handleTeamDialogClose = () => {
+  //   setTeamDialogOpen(false);
+  // };
+
+  const handleViewDialogOpen = (event, params) => {
+    setSelectedUser(params.row);
+    setViewDialog(true);
   };
 
-  const handleDialogClose = () => {
-    setDialogOpen(false);
-  };
-
-  const handleContactDialogOpen = () => {
-    setContactDialogOpen(true);
-  };
-
-  const handleContactDialogClose = () => {
-    setContactDialogOpen(false);
-  };
-
-  const handleTeamDialogOpen = () => {
-    setTeamDialogOpen(true);
-  };
-
-  const handleTeamDialogClose = () => {
-    setTeamDialogOpen(false);
+  const handleViewDialogClose = () => {
+    setViewDialog(false);
+    setSelectedUser({});
   };
 
   // Language
@@ -71,7 +89,7 @@ export default function AllUsers() {
   }, [currentLanguage, t]);
 
   const columns = [
-    { field: "id", headerName: `${t("ID")}`, width: 70 },
+    { field: "UserID", headerName: `${t("ID")}`, width: 70 },
     {
       field: "photo",
       headerName: `${t("Photo")}`,
@@ -87,7 +105,7 @@ export default function AllUsers() {
       },
     },
     {
-      field: "name",
+      field: "NameEnglish",
       headerName: `${t("Name")}`,
       width: 150,
       align: "left",
@@ -95,7 +113,7 @@ export default function AllUsers() {
     },
 
     {
-      field: "email",
+      field: "UserMail",
       headerName: `${t("Email")}`,
       type: "string",
       width: 200,
@@ -104,7 +122,7 @@ export default function AllUsers() {
     },
 
     {
-      field: "username",
+      field: "UserName",
       headerName: `${t("UserName")}`,
       type: "string",
       width: 200,
@@ -113,7 +131,7 @@ export default function AllUsers() {
     },
 
     {
-      field: "phone",
+      field: "UserPhone",
       headerName: `${t("Phone")}`,
       type: "number",
       width: 150,
@@ -122,7 +140,7 @@ export default function AllUsers() {
     },
 
     {
-      field: "lastlogin",
+      field: "lastLogin",
       headerName: `${t("Last Login")}`,
       type: "string",
       width: 200,
@@ -131,19 +149,12 @@ export default function AllUsers() {
     },
 
     {
-      field: "status",
+      field: "StatusID",
       headerName: `${t("Status")}`,
-      type: "string",
+      // type: "string",
       width: 200,
       align: "left",
       headerAlign: "left",
-    },
-
-    {
-      field: "verified",
-      headerName: `${t("Verified")}`,
-      width: 100,
-      type: "boolean",
     },
 
     {
@@ -151,7 +162,7 @@ export default function AllUsers() {
       headerName: `${t("Actions")}`,
       width: 250,
       cellClassName: "actions",
-      renderCell: () => {
+      renderCell: (params) => {
         const label = { inputProps: { "aria-label": "Size switch demo" } };
         return (
           <>
@@ -163,55 +174,21 @@ export default function AllUsers() {
               />
             </Tooltip>
 
-            <Tooltip placement="bottom" arrow title="Contacts">
-              <GridActionsCellItem
-                icon={
-                  <ContactPhoneRounded
-                    color="secondary"
-                    sx={{ fontSize: "25px" }}
-                  />
-                }
-                label="Contacts"
-                color="inherit"
-                onClick={handleContactDialogOpen}
-              />
-            </Tooltip>
-
-            <Tooltip placement="bottom" arrow title="Teams">
-              <GridActionsCellItem
-                icon={
-                  <GroupRounded color="warning" sx={{ fontSize: "25px" }} />
-                }
-                label="Teams"
-                color="inherit"
-                onClick={handleTeamDialogOpen}
-              />
-            </Tooltip>
-
             <Tooltip placement="bottom" arrow title="View">
               <GridActionsCellItem
                 icon={
                   <VisibilityRounded
                     color="info"
                     sx={{ fontSize: "25px" }}
-                    onClick={handleDialogOpen}
+                    onClick={(event) => {
+                      handleViewDialogOpen(event, params);
+                    }}
                   />
                 }
                 label="View"
                 color="inherit"
               />
               {/* <EditUser open={dialogOpen} onClose={handleDialogClose} /> */}
-            </Tooltip>
-
-            <Tooltip placement="bottom" arrow title="Edit">
-              <GridActionsCellItem
-                icon={
-                  <EditNoteRounded color="success" sx={{ fontSize: "25px" }} />
-                }
-                label="Edit"
-                color="inherit"
-                onClick={handleDialogOpen}
-              />
             </Tooltip>
 
             <Tooltip placement="bottom" arrow title="Delete">
@@ -221,6 +198,7 @@ export default function AllUsers() {
                 }
                 label="Delete"
                 color="inherit"
+                onClick={() => handleDeleteUser(params.row.UserID)}
               />
             </Tooltip>
           </>
@@ -229,34 +207,142 @@ export default function AllUsers() {
     },
   ];
 
-  const rows = [
-    {
-      id: 1,
-      name: "Facebook",
-      location: "Calefornia",
-      phone: 38292114,
-      address: "USA",
-      employess: 2100,
-    },
-    {
-      id: 2,
-      name: "Facebook",
-      location: "Calefornia",
-      phone: 38292114,
-      address: "USA",
-      employess: 2100,
-    },
-  ];
+  // Delete User
+  const deleteUser = async (UserID) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3002/api/user?userID=${UserID}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (response.ok) {
+        // User deleted successfully, update the state
+        setUsers(users.filter((user) => user.UserID !== UserID));
+      } else {
+        console.error("Error deleting user");
+      }
+    } catch (error) {
+      console.error("Error deleting user:", error);
+    }
+  };
+
+  const handleDeleteUser = (UserID) => {
+    console.log("Selected UserID for deletion:", UserID);
+    deleteUser(UserID);
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch("http://localhost:3002/api/user");
+        const data = await response.json();
+
+        // Filter users by CompanyID
+        const filteredUsers = data.filter(
+          (user) =>
+            user.CompanyID === parseInt(selectedCompanyId, 10) &&
+            user.Active === true
+        );
+
+        setUsers(filteredUsers);
+        console.log(filteredUsers);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchData();
+  }, [selectedCompanyId]);
 
   return (
     <>
-      <DataTable columns={columns} rows={usersRows} />
-      <EditUser open={dialogOpen} onClose={handleDialogClose} />
-      <ContactsDialog
-        open={contactDialogOpen}
-        onClose={handleContactDialogClose}
-      />
-      <TeamsDialog open={teamDialogOpen} onClose={handleTeamDialogClose} />
+      <Box
+        sx={{
+          height: "100% auto",
+          width: "100%",
+          m: 1,
+          p: 2,
+        }}
+      >
+        <DataGrid
+          rows={users}
+          columns={columns}
+          getRowId={getRowId}
+          initialState={{
+            pagination: {
+              paginationModel: {
+                pageSize: 10,
+              },
+            },
+          }}
+          checkboxSelection
+          onRowSelectionModelChange={function (ids) {
+            console.log(users);
+            console.log(ids);
+            const selectedIDs = new Set(ids);
+            const selectedRows = users.filter((row) => selectedIDs.has(row));
+
+            setSelectedRows(selectedRows);
+          }}
+          slots={{ toolbar: GridToolbar }}
+          slotProps={{
+            toolbar: {
+              showQuickFilter: true,
+              quickFilterProps: { debounceMs: 500 },
+            },
+          }}
+          pageSizeOptions={[5]}
+          disableColumnSelector
+          disableDensitySelector
+        />
+        {/* <pre style={{ fontSize: 10 }}>
+          {JSON.stringify(selectedUser, null, 4)}
+        </pre> */}
+        {/* <DataGrid
+          rows={users}
+          columns={columns}
+          getRowId={getRowId}
+          initialState={{
+            pagination: {
+              paginationModel: {
+                pageSize: 10,
+              },
+            },
+          }}
+          onSelectionModelChange={(ids) => {
+            const selectedIDs = new Set(ids);
+            const selectedRowData = users.rows.filter((row) => {
+              selectedIDs.has(row.UserID);
+            });
+            console.log(selectedRowData);
+          }}
+          rowSelectionModel={rowSelectionModel}
+          slots={{ toolbar: GridToolbar }}
+          slotProps={{
+            toolbar: {
+              showQuickFilter: true,
+              quickFilterProps: { debounceMs: 500 },
+            },
+          }}
+          pageSizeOptions={[5]}
+          checkboxSelection
+          disableColumnSelector
+          disableDensitySelector
+        /> */}
+        {/* <EditUser open={dialogOpen} onClose={handleDialogClose} />
+        <ContactsDialog
+          open={contactDialogOpen}
+          data={selectedUser}
+          onClose={handleContactDialogClose}
+        /> */}
+        <ViewUserDetails
+          open={viewDialog}
+          onClose={handleViewDialogClose}
+          userData={selectedUser}
+        />
+      </Box>
     </>
   );
 }

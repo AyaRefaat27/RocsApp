@@ -1,38 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Box, Button, Stack, TextField, Typography } from "@mui/material";
-import Divider from "@mui/material/Divider";
-import ImageUpload from "./imageUpload";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
+import { Box, Button, Grid, TextField, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import Cookies from "js-cookie";
 import styled from "@emotion/styled";
-import SelectSocialMedia from "./selectSocialMedia";
-
-const StyledTextarea = styled.textarea`
-  padding: 10px;
-  font-size: 20px;
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  resize: vertical;
-  &:focus {
-    outline: none;
-    border-color: #007bff;
-    box-shadow: 0 0 0 2px #ddd;
-  }
-`;
 
 export default function AddCompany() {
-  const [field, setField] = useState("");
-
-  const handleChange = (event) => {
-    setField(event.target.value);
-  };
-  const navigate = useNavigate();
-
   // Language
   const { t } = useTranslation();
   const languages = [
@@ -55,19 +28,55 @@ export default function AddCompany() {
     document.title = t("Title");
   }, [currentLanguage, t]);
 
+  // Add Company
+
+  const [addCompany, setAddCompany] = useState({
+    CreatedByUserID: Number(localStorage.getItem("creationUserID")),
+    NameArabic: "",
+    NameEnglish: "",
+    Mail: "",
+    Phone: "",
+  });
+
+  const handleChange = (e) => {
+    setAddCompany((previous) => ({
+      ...previous,
+      [e.target.id]: e.target.value,
+    }));
+  };
+
+  const handleClick = async (e) => {
+    e.preventDefault();
+
+    try {
+      const res = await fetch("http://localhost:3002/api/company", {
+        method: "post",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        Credentials: "include",
+        body: JSON.stringify(addCompany),
+      });
+      const result = await res.json();
+      if (!res.ok) {
+        return alert(result.message);
+      }
+      alert("Company Created Successfully");
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+
   return (
-    <div>
-      <Stack
-        direction="row"
-        divider={<Divider orientation="vertical" flexItem />}
-        // spacing={2}
-        spacing={{ xs: 1, sm: 2 }}
-        useFlexGap
-        flexWrap="wrap"
+    <>
+      <Box
+        sx={{
+          p: 3,
+        }}
       >
-        <Box>
-          <ImageUpload />
-        </Box>
+        <Typography gutterBottom variant="h4" component="div">
+          {t("Add Company")}
+        </Typography>
         <Box
           component="form"
           sx={{
@@ -77,163 +86,81 @@ export default function AddCompany() {
               width: "100%",
             },
           }}
-          noValidate
-          autoComplete="off"
+          onSubmit={handleChange}
         >
-          <table
-            sx={{
-              width: "100%",
-            }}
-          >
-            <tr>
-              <th>{t("Company Name")}</th>
-              <td>
-                <TextField
-                  id="outlined-basic"
-                  label={`${t("Company Name")}`}
-                  variant="outlined"
-                  fullWidth
-                  sx={{ m: 1 }}
-                />
-              </td>
-            </tr>
+          <Grid container spacing={3} sx={{ mt: 3, mb: 3 }}>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                autoComplete="given-name"
+                id="NameEnglish"
+                name="NameEnglish"
+                label={`${t("Company English Name")}`}
+                variant="outlined"
+                fullWidth
+                onChange={handleChange}
+              />
+            </Grid>
 
-            <tr>
-              <th>{t("Field")}</th>
-              <td>
-                <FormControl fullWidth sx={{ m: 1 }}>
-                  <InputLabel id="demo-simple-select-label">
-                    {t("Field")}
-                  </InputLabel>
-                  <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    value={field}
-                    label={`${t("Field")}`}
-                    onChange={handleChange}
-                  >
-                    <MenuItem value="programming">Programming</MenuItem>
-                    <MenuItem value="engineer">Engineer</MenuItem>
-                    <MenuItem value="food">Food</MenuItem>
-                  </Select>
-                </FormControl>
-              </td>
-            </tr>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                autoComplete="given-name"
+                id="NameArabic"
+                name="NameArabic"
+                label={`${t("Company Arabic Name")}`}
+                variant="outlined"
+                fullWidth
+                onChange={handleChange}
+              />
+            </Grid>
 
-            <tr>
-              <th>{t("WhatsApp Number")}</th>
-              <td>
-                <TextField
-                  id="outlined-basic"
-                  label={`${t("WhatsApp Number")}`}
-                  variant="outlined"
-                  fullWidth
-                  sx={{ m: 1 }}
-                />
-              </td>
-            </tr>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                autoComplete="phone"
+                id="Phone"
+                name="Phone"
+                label={`${t("Phone")}`}
+                variant="outlined"
+                fullWidth
+                onChange={handleChange}
+              />
+            </Grid>
 
-            <tr>
-              <th>{t("Address")}</th>
-              <td>
-                <TextField
-                  id="outlined-basic"
-                  label={`${t("Address")}`}
-                  variant="outlined"
-                  fullWidth
-                  sx={{ m: 1 }}
-                />
-              </td>
-            </tr>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                autoComplete="email"
+                id="Mail"
+                name="Mail"
+                label={`${t("Mail")}`}
+                variant="outlined"
+                fullWidth
+                onChange={handleChange}
+              />
+            </Grid>
 
-            <tr>
-              <th>{t("Country")}</th>
-              <td>
-                <FormControl fullWidth sx={{ m: 1 }}>
-                  <InputLabel id="demo-simple-select-label">
-                    {t("Country")}
-                  </InputLabel>
-                  <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    value={field}
-                    label={`${t("Country")}`}
-                    onChange={handleChange}
-                  >
-                    <MenuItem value="egypt">Egypt</MenuItem>
-                    <MenuItem value="usa">USA</MenuItem>
-                    <MenuItem value="japan">Japan</MenuItem>
-                  </Select>
-                </FormControl>
-              </td>
-            </tr>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                autoComplete="country"
+                id="Country"
+                name="Country"
+                label={`${t("Country")}`}
+                variant="outlined"
+                fullWidth
+                onChange={handleChange}
+              />
+            </Grid>
 
-            <tr>
-              <th>{t("City")}</th>
-              <td>
-                <FormControl fullWidth sx={{ m: 1 }}>
-                  <InputLabel id="demo-simple-select-label">
-                    {t("City")}
-                  </InputLabel>
-                  <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    value={field}
-                    label={`${t("City")}`}
-                    onChange={handleChange}
-                  >
-                    <MenuItem value="cairo">Cairo</MenuItem>
-                    <MenuItem value="london">London</MenuItem>
-                    <MenuItem value="tokyo">Tokyo</MenuItem>
-                  </Select>
-                </FormControl>
-              </td>
-            </tr>
-
-            <tr>
-              <th>{t("Email")}</th>
-              <td>
-                <TextField
-                  id="outlined-basic"
-                  label={`${t("Email")}`}
-                  variant="outlined"
-                  fullWidth
-                  sx={{ m: 1 }}
-                />
-              </td>
-            </tr>
-
-            <tr>
-              <th>{t("Branches")}</th>
-              <td>
-                <FormControl fullWidth sx={{ m: 1 }}>
-                  <InputLabel id="demo-simple-select-label">
-                    {t("Company Branches")}
-                  </InputLabel>
-                  <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    value={field}
-                    label={`${t("Branches")}`}
-                    onChange={handleChange}
-                  >
-                    <MenuItem value="cairo">Cairo</MenuItem>
-                    <MenuItem value="london">London</MenuItem>
-                    <MenuItem value="tokyo">Tokyo</MenuItem>
-                  </Select>
-                </FormControl>
-              </td>
-            </tr>
-
-            <tr>
-              <th>{t("Information")}</th>
-              <td>
-                <Box>
-                  <StyledTextarea rows={5} cols={60} sx={{ m: 1 }} />
-                </Box>
-              </td>
-            </tr>
-          </table>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                autoComplete="city"
+                id="City"
+                name="City"
+                label={`${t("City")}`}
+                variant="outlined"
+                fullWidth
+                onChange={handleChange}
+              />
+            </Grid>
+          </Grid>
 
           <Box
             sx={{
@@ -243,13 +170,12 @@ export default function AddCompany() {
               justifyContent: "flex-end",
             }}
           >
-            <Button variant="outlined">{t("Save")}</Button>
-            <Button variant="outlined" sx={{ ml: 1 }}>
-              {t("Back")}
+            <Button variant="outlined" type="submit" onClick={handleClick}>
+              {t("Save")}
             </Button>
           </Box>
         </Box>
-      </Stack>
-    </div>
+      </Box>
+    </>
   );
 }

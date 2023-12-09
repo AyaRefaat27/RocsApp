@@ -13,8 +13,14 @@ import Tab from "@mui/material/Tab";
 import PropTypes from "prop-types";
 import Tabs from "@mui/material/Tabs";
 import { styled } from "@mui/material/styles";
-import { PasswordRounded, VerifiedUser } from "@mui/icons-material";
+import {
+  ContactsRounded,
+  PasswordRounded,
+  SubscriptionsRounded,
+  VerifiedUser,
+} from "@mui/icons-material";
 import Password from "./Password";
+import UserContact from "./UserContact";
 
 const StyledTabs = styled((props) => (
   <Tabs
@@ -170,6 +176,18 @@ export default function UserProfile() {
                       label={t("Change Password")}
                       {...a11yProps(1)}
                     />
+                    <StyledTab
+                      icon={<ContactsRounded />}
+                      iconPosition="start"
+                      label={t("Contacts")}
+                      {...a11yProps(2)}
+                    />
+                    <StyledTab
+                      icon={<SubscriptionsRounded />}
+                      iconPosition="start"
+                      label={t("Channels")}
+                      {...a11yProps(3)}
+                    />
                   </StyledTabs>
                 </Box>
                 <CustomTabPanel value={value} index={0}>
@@ -177,6 +195,12 @@ export default function UserProfile() {
                 </CustomTabPanel>
                 <CustomTabPanel value={value} index={1}>
                   <Password />
+                </CustomTabPanel>
+                <CustomTabPanel value={value} index={2}>
+                  <UserContact />
+                </CustomTabPanel>
+                <CustomTabPanel value={value} index={3}>
+                  Channels
                 </CustomTabPanel>
               </Box>
             </Box>

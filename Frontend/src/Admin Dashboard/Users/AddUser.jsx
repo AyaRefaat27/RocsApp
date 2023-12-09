@@ -2,44 +2,12 @@ import React, { useContext, useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import { useTranslation } from "react-i18next";
 import Cookies from "js-cookie";
-import styled from "@emotion/styled";
-import {
-  Button,
-  Card,
-  CardActionArea,
-  CardActions,
-  CardMedia,
-} from "@mui/material";
+import { Button } from "@mui/material";
 
 import { Grid, TextField, Typography } from "@mui/material";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../../Context/authContext";
-
-const VisuallyHiddenInput = styled("input")({
-  clip: "rect(0 0 0 0)",
-  clipPath: "inset(50%)",
-  height: 1,
-  overflow: "hidden",
-  position: "absolute",
-  bottom: 0,
-  left: 0,
-  whiteSpace: "nowrap",
-  width: 1,
-});
-
-const companies = ["Facebook", "Google", "Microsoft"];
 
 export default function AddUser() {
-  const [company, setCompany] = useState([]);
-
-  const handleCompanyChange = (event) => {
-    setCompany(event.target.value);
-  };
-
   // Language
   const { t } = useTranslation();
   const languages = [
@@ -63,7 +31,6 @@ export default function AddUser() {
   }, [currentLanguage, t]);
 
   const navigate = useNavigate();
-  // const { user } = useContext(AuthContext);
 
   const [addUser, setAddUser] = useState({
     creationUserID: Number(localStorage.getItem("creationUserID")),
@@ -90,19 +57,17 @@ export default function AddUser() {
       const res = await fetch("http://localhost:3002/api/user", {
         method: "post",
         headers: {
-          "content-type": "application/json",
+          "Content-Type": "application/json",
         },
-        credentials: "include",
+        Credentials: "include",
         body: JSON.stringify(addUser),
       });
-      console.log(addUser);
-      console.log(res);
       const result = await res.json();
-      console.log(result);
       if (!res.ok) {
         return alert(result.message);
       }
-      navigate("/");
+      alert("User Created Successfully");
+      navigate("/dashboard");
     } catch (error) {
       alert(error.message);
     }
@@ -159,13 +124,10 @@ export default function AddUser() {
       </Box> */}
 
       {/* User Data */}
-      <Box sx={{ width: "70%" }}>
+      <Box sx={{ width: "90%" }}>
         <Box
           sx={{
-            borderRadius: "25px",
-            boxShadow: "0px 0px 10px #ddd",
             p: 3,
-            height: "100% auto",
           }}
         >
           <Typography gutterBottom variant="h4" component="div">
@@ -186,7 +148,6 @@ export default function AddUser() {
                   id="NameEnglish"
                   name="NameEnglish"
                   label={t("Full Name in English")}
-                  required
                   fullWidth
                   onChange={handleChange}
                 />
@@ -199,7 +160,6 @@ export default function AddUser() {
                   id="NameArabic"
                   label={t("Full Name in Arabic")}
                   dir="rtl"
-                  required
                   fullWidth
                   onChange={handleChange}
                 />
@@ -212,7 +172,7 @@ export default function AddUser() {
                 <TextField
                   autoComplete="given-email"
                   id="UserMail"
-                  name="UserName"
+                  name="UserEmail"
                   label={t("Email")}
                   required
                   fullWidth

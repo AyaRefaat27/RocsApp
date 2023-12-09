@@ -27,6 +27,18 @@ import {
 import ConfirmationDialogRaw from "./UserStatus";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
+const VisuallyHiddenInput = styled("input")({
+  clip: "rect(0 0 0 0)",
+  clipPath: "inset(50%)",
+  height: 1,
+  overflow: "hidden",
+  position: "absolute",
+  bottom: 0,
+  left: 0,
+  whiteSpace: "nowrap",
+  width: 1,
+});
+
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
   return <IconButton {...other} />;
@@ -76,7 +88,7 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
   },
 }));
 
-export default function PhotoCard() {
+export default function EditPhoto() {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState("Online");
   const [expanded, setExpanded] = useState(false);
@@ -128,6 +140,11 @@ export default function PhotoCard() {
     </>
   );
 
+  //Photo
+  const [photoValue, setPhotoValue] = useState(null);
+  const handlePhotoChange = (event) => {
+    setPhotoValue(event.target.files[0]);
+  };
   return (
     <Card sx={{ borderRadius: "25px", boxShadow: "0px 0px 10px #ddd" }}>
       <CardActionArea
@@ -160,6 +177,8 @@ export default function PhotoCard() {
                 boxShadow: "0px 0px 10px #ddd",
               }}
               alt=""
+              //   src={URL.createObjectURL(photoValue)}
+              //   image={URL.createObjectURL(photoValue)}
               src="https://png.pngtree.com/png-clipart/20221207/ourmid/pngtree-business-man-avatar-png-image_6514640.png"
             />
           </Badge>
@@ -219,6 +238,11 @@ export default function PhotoCard() {
           component="label"
         >
           Change Profile Photo
+          <VisuallyHiddenInput
+            type="file"
+            accept="image/*"
+            onChange={handlePhotoChange}
+          />
         </Button>
 
         <ExpandMore
@@ -260,15 +284,15 @@ export default function PhotoCard() {
             </Button>
 
             {/* <Snackbar
-              open={openBar}
-              autoHideDuration={6000}
-              onClose={handleCloseSnackBar}
-              message="Are you sure you want to disable your account?"
-              action={action}
-              anchorOrigin={{ vertical, horizontal }}
-              key={vertical + horizontal}
-              sx={{ background: "#fff" }}
-            /> */}
+                open={openBar}
+                autoHideDuration={6000}
+                onClose={handleCloseSnackBar}
+                message="Are you sure you want to disable your account?"
+                action={action}
+                anchorOrigin={{ vertical, horizontal }}
+                key={vertical + horizontal}
+                sx={{ background: "#fff" }}
+              /> */}
           </Box>
 
           <Box>

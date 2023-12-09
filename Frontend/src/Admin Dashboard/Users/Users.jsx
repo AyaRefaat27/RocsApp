@@ -10,14 +10,9 @@ import Tab from "@mui/material/Tab";
 import PropTypes from "prop-types";
 import Tabs from "@mui/material/Tabs";
 import { styled } from "@mui/material/styles";
-import {
-  AddIcCallRounded,
-  GroupAddRounded,
-  PeopleRounded,
-} from "@mui/icons-material";
+import { GroupAddRounded, PeopleRounded } from "@mui/icons-material";
 import AllUsers from "./AllUsers";
 import AddUser from "./AddUser";
-import AddUserContact from "./AddUserContact";
 
 const StyledTabs = styled((props) => (
   <Tabs
@@ -158,12 +153,6 @@ export default function Users() {
                     label={t("Add User")}
                     {...a11yProps(1)}
                   />
-                  <StyledTab
-                    icon={<AddIcCallRounded />}
-                    iconPosition="start"
-                    label={t("Add Contact")}
-                    {...a11yProps(2)}
-                  />
                 </StyledTabs>
               </Box>
               <CustomTabPanel value={value} index={0}>
@@ -171,9 +160,6 @@ export default function Users() {
               </CustomTabPanel>
               <CustomTabPanel value={value} index={1}>
                 <AddUser />
-              </CustomTabPanel>
-              <CustomTabPanel value={value} index={2}>
-                <AddUserContact />
               </CustomTabPanel>
             </Box>
           </Box>

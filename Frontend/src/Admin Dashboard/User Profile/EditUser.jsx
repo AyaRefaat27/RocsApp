@@ -7,9 +7,9 @@ import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import CloseIcon from "@mui/icons-material/Close";
 import Slide from "@mui/material/Slide";
-import PhotoCard from "./PhotoCard";
-import BasicInfoCard from "./BasicInfoCard";
 import { Box } from "@mui/material";
+import EditPhoto from "./EditPhoto";
+import EditInfo from "./EditInfo";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="bottom" ref={ref} {...props} />;
@@ -26,7 +26,7 @@ export default function EditUser({ open, onClose }) {
       onClose={handleClose}
       TransitionComponent={Transition}
     >
-      <AppBar sx={{ position: "relative" }}>
+      <AppBar sx={{ position: "relative", background: "#fff" }}>
         <Toolbar>
           <IconButton
             edge="start"
@@ -36,10 +36,19 @@ export default function EditUser({ open, onClose }) {
           >
             <CloseIcon />
           </IconButton>
-          <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
+          <Typography
+            sx={{ ml: 2, flex: 1, color: "#333" }}
+            variant="h6"
+            component="div"
+          >
             Edit User
           </Typography>
-          <Button autoFocus color="inherit" onClick={handleClose}>
+          <Button
+            autoFocus
+            sx={{ color: "#333" }}
+            onClick={handleClose}
+            variant="outlined"
+          >
             save
           </Button>
         </Toolbar>
@@ -58,7 +67,7 @@ export default function EditUser({ open, onClose }) {
         }}
       >
         <Box sx={{ width: "350px" }}>
-          <PhotoCard />
+          <EditPhoto />
         </Box>
         <Box
           sx={{
@@ -69,7 +78,7 @@ export default function EditUser({ open, onClose }) {
             p: 3,
           }}
         >
-          <BasicInfoCard />
+          <EditInfo />
         </Box>
       </Box>
     </Dialog>

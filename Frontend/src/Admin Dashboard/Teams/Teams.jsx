@@ -10,13 +10,7 @@ import Tab from "@mui/material/Tab";
 import PropTypes from "prop-types";
 import Tabs from "@mui/material/Tabs";
 import { styled } from "@mui/material/styles";
-import {
-  AddIcCallRounded,
-  GroupAddRounded,
-  GroupRounded,
-  PeopleRounded,
-} from "@mui/icons-material";
-import AddTeamContact from "./AddTeamContact";
+import { GroupAddRounded, GroupRounded } from "@mui/icons-material";
 import AddTeams from "./AddTeams";
 import AllTeams from "./AllTeams";
 
@@ -159,12 +153,6 @@ export default function Teams() {
                     label={t("Add Team")}
                     {...a11yProps(1)}
                   />
-                  <StyledTab
-                    icon={<AddIcCallRounded />}
-                    iconPosition="start"
-                    label={t("Contacts")}
-                    {...a11yProps(2)}
-                  />
                 </StyledTabs>
               </Box>
               <CustomTabPanel value={value} index={0}>
@@ -172,9 +160,6 @@ export default function Teams() {
               </CustomTabPanel>
               <CustomTabPanel value={value} index={1}>
                 <AddTeams />
-              </CustomTabPanel>
-              <CustomTabPanel value={value} index={2}>
-                <AddTeamContact />
               </CustomTabPanel>
             </Box>
           </Box>

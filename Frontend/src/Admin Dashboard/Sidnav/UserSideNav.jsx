@@ -98,8 +98,7 @@ const Drawer = styled(MuiDrawer, {
     "& .MuiDrawer-paper": closedMixin(theme),
   }),
 }));
-
-export default function SideNav() {
+export default function UserSideNav() {
   const theme = useTheme();
   const navigate = useNavigate();
   const open = useDasboardApp((state) => state.dopen);
@@ -131,109 +130,19 @@ export default function SideNav() {
     document.title = t("Title");
   }, [currentLanguage, t]);
 
-  // Admin Menu
-
-  const [anchorMenu, setAnchorMenu] = useState(null);
-  const openMenu = Boolean(anchorMenu);
-  const handleOpenMenu = (event) => {
-    setAnchorMenu(event.currentTarget);
-  };
-  const handleCloseMenu = () => {
-    setAnchorMenu(null);
-  };
-
-  // Fetch All Companies
-  const [companies, setCompanies] = useState([]);
-  useEffect(() => {
-    // Retrieve the data from localStorage
-    const storedData = localStorage.getItem("Companies"); // Replace "yourKey" with the actual key you used to store the data
-
-    if (storedData) {
-      // If data exists in localStorage, parse it and set it to state
-      const parsedData = JSON.parse(storedData);
-      setCompanies(parsedData);
-    }
-  }, []);
-
-  //Selected Company ID
-  const [selectedCompanyId, setSelectedCompanyId] = useState(null);
-
-  const handleCompanySelect = (companyId) => () => {
-    setSelectedCompanyId(companyId);
-    handleCloseMenu();
-    console.log(companyId);
-    localStorage.setItem("selectedCompanyId", companyId);
-  };
-
-  // const fetchCompanies = async () => {
-  //   try {
-  //     const response = await fetch(
-  //       `http://localhost:3002/api/company?userId=${userID}`
-  //     );
-  //     const data = await response.json();
-  //     setGetCompany(data);
-  //     console.log(data);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
   const SideBarMenus = [
-    {
-      title: "Admin User",
-      icon: (
-        <>
-          <Avatar
-            sx={{ bgcolor: green[500] }}
-            variant="rounded"
-            id="fade-button"
-            aria-controls={open ? "fade-menu" : undefined}
-            aria-haspopup="true"
-            aria-expanded={open ? "true" : undefined}
-            onClick={handleOpenMenu}
-          >
-            <HomeWorkRounded />
-          </Avatar>
-
-          <Menu
-            id="fade-menu"
-            MenuListProps={{
-              "aria-labelledby": "fade-button",
-            }}
-            anchorEl={anchorMenu}
-            open={openMenu}
-            onClose={handleCloseMenu}
-            TransitionComponent={Fade}
-          >
-            {companies.map((company) => {
-              return (
-                <MenuItem
-                  key={company.CompanyID}
-                  onClick={handleCompanySelect(company.CompanyID)}
-                  selected={selectedCompanyId === company.CompanyID}
-                >
-                  {company.NameEnglish}
-                </MenuItem>
-              );
-            })}
-          </Menu>
-        </>
-      ),
-
-      // path: "/dashboard",
-    },
-
     {
       title: "Dashboard",
       icon: <ViewQuiltRounded />,
       // icon: "icon-grid",
-      path: "/dashboard",
+      path: "/user_dashboard",
     },
 
     {
       title: "Business Account",
       icon: <ContactEmergencyRounded />,
       // icon: "icon-briefcase",
-      path: "/business_account",
+      path: "/#",
     },
 
     {
@@ -246,43 +155,43 @@ export default function SideNav() {
         {
           title: "Bot Setup",
           icon: <PhonelinkSetupRounded />,
-          path: "/",
+          path: "#",
         },
 
         {
           title: "SubMenus Order",
           icon: <LowPriorityRounded />,
-          path: "/",
+          path: "#",
         },
 
         {
           title: "Special Actions",
           icon: <BoltRounded />,
-          path: "/",
+          path: "#",
         },
 
         {
           title: "General Bot Messages",
           icon: <SpeakerNotesRounded />,
-          path: "/",
+          path: "#",
         },
 
         {
           title: "Keywords",
           icon: <KeyboardRounded />,
-          path: "/",
+          path: "#",
         },
 
         {
           title: "Bot Settings",
           icon: <SettingsSuggestRoundedIcon />,
-          path: "/",
+          path: "#",
         },
 
         {
           title: "Test and Launch",
           icon: <SpeedRounded />,
-          path: "/",
+          path: "#",
         },
       ],
     },
@@ -290,105 +199,52 @@ export default function SideNav() {
     {
       title: "Campaign",
       icon: <CampaignRoundedIcon />,
-      path: "/",
+      path: "#",
     },
 
     {
       title: "Templates",
       icon: <TabRounded />,
       // icon: <TopicRounded />,
-      path: "/",
+      path: "#",
     },
 
     {
       title: "Send Message",
       icon: <NearMeRounded />,
       // icon: <MessageRounded />,
-      path: "/",
+      path: "#",
     },
 
     {
       title: "Reports",
       icon: <AssignmentRounded />,
       // icon: <ReportRounded />,
-      path: "/",
+      path: "#",
     },
 
     {
       title: "Alerts",
       icon: <NotificationsRounded />,
-      path: "/",
+      path: "#",
     },
 
     {
       title: "WorkSpace",
       icon: <WorkspacesRounded />,
-      path: "/",
+      path: "#",
     },
 
     {
       title: "User Profile",
       icon: <SupervisedUserCircleRounded />,
-      path: "/user_profile",
-    },
-
-    {
-      title: "User Management",
-      icon: <SettingsSuggestRoundedIcon />,
-      path: "#",
-      nestedItems: [
-        {
-          title: "Companies",
-          icon: <HomeWorkRounded />,
-          path: "/companies",
-          objectType: "Company",
-        },
-
-        {
-          title: "Teams",
-          icon: <GroupRounded />,
-          path: "/teams",
-          objectType: "Team",
-        },
-
-        {
-          title: "Users",
-          icon: <SupervisorAccountRounded />,
-          path: "/users",
-          objectType: "User",
-        },
-
-        {
-          title: "Customer",
-          icon: <SupervisorAccountRounded />,
-          path: "/contacts",
-          objectType: "Customer",
-        },
-
-        {
-          title: "Contacts",
-          icon: <ConnectWithoutContactRounded />,
-          path: "/contacts",
-        },
-
-        {
-          title: "Channels",
-          icon: <SubscriptionsRounded />,
-          path: "/setting",
-        },
-
-        {
-          title: "Foot Print",
-          icon: <FingerprintRounded />,
-          path: "/footprint",
-        },
-      ],
+      path: "/profile",
     },
 
     {
       title: "Tools",
       icon: <BuildRounded />,
-      path: "/",
+      path: "#",
     },
 
     {
@@ -404,12 +260,6 @@ export default function SideNav() {
 
   const handleNestedItemClick = (nestedItem) => {
     setSelectedNestedItem(nestedItem);
-    // Add your logic here based on the clicked nested item
-    console.log(`User clicked on nested item: ${nestedItem.objectType}`);
-    localStorage.setItem("ObjectType", nestedItem.objectType);
-
-    const selectedItem = localStorage.getItem("ObjectType");
-    console.log(selectedItem);
   };
 
   // Open Nested List

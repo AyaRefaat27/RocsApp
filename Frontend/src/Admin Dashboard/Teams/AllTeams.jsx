@@ -1,20 +1,31 @@
 import React, { useEffect, useState } from "react";
 import "../../App.css";
-import Avatar from "@mui/material/Avatar";
-import { FormControl, MenuItem, Select, Switch, Tooltip } from "@mui/material";
+import { Box, Tooltip } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import Cookies from "js-cookie";
-import DataTable from "../Shared/DataTable";
-import { teamsRows } from "../Shared/data";
-import {
-  ContactPhoneRounded,
-  DeleteSweepRounded,
-  EditNoteRounded,
-  VisibilityRounded,
-} from "@mui/icons-material";
-import { GridActionsCellItem } from "@mui/x-data-grid";
+import { DeleteSweepRounded, VisibilityRounded } from "@mui/icons-material";
+import { GridActionsCellItem, GridToolbar } from "@mui/x-data-grid";
+import { DataGrid } from "@mui/x-data-grid";
+import ViewDialog from "./View/ViewDialog";
 
 export default function AllTeams() {
+  const [teams, setTeams] = useState([]);
+  const [selectedRows, setSelectedRows] = useState([]);
+  var [selectedTeam, setSelectedTeam] = useState({});
+  const getRowId = (row) => row.TeamID;
+  const selectedCompanyId = localStorage.getItem("selectedCompanyId");
+  const [viewDialog, setViewDialog] = useState(false);
+
+  const handleViewDialogOpen = (event, params) => {
+    setSelectedTeam(params.row);
+    setViewDialog(true);
+  };
+
+  const handleViewDialogClose = () => {
+    setViewDialog(false);
+    setSelectedTeam({});
+  };
+
   // Language
   const { t } = useTranslation();
   const languages = [
@@ -38,42 +49,27 @@ export default function AllTeams() {
   }, [currentLanguage, t]);
 
   const columns = [
-    { field: "id", headerName: `${t("ID")}`, width: 70 },
+    { field: "TeamID", headerName: `${t("ID")}`, width: 70 },
     {
-      field: "name",
+      field: "TeamName",
       headerName: `${t("Team Name")}`,
-      width: 170,
+      width: 200,
       align: "left",
       headerAlign: "left",
     },
 
     {
-      field: "field",
-      headerName: `${t("Team Field")}`,
-      width: 170,
+      field: "TeamMail",
+      headerName: `${t("Team Mail")}`,
+      width: 200,
       align: "left",
       headerAlign: "left",
     },
 
     {
-      field: "location",
-      headerName: `${t("Location")}`,
+      field: "ParentTeamID",
+      headerName: `${t("Parent Team")}`,
       width: 150,
-    },
-
-    {
-      field: "employess",
-      headerName: `${t("Team Members")}`,
-      type: "number",
-      width: 150,
-      align: "left",
-      headerAlign: "left",
-    },
-
-    {
-      field: "branche",
-      headerName: `${t("Company Branche")}`,
-      width: 170,
       align: "left",
       headerAlign: "left",
     },
@@ -83,47 +79,22 @@ export default function AllTeams() {
       headerName: `${t("Actions")}`,
       width: 200,
       cellClassName: "actions",
-      renderCell: () => {
+      renderCell: (params) => {
         const label = { inputProps: { "aria-label": "Size switch demo" } };
         return (
           <>
-            <Tooltip placement="bottom" arrow title="Revoke">
-              <GridActionsCellItem
-                icon={<Switch {...label} defaultChecked size="small" />}
-                label="Revoke"
-                color="inherit"
-              />
-            </Tooltip>
-
-            <Tooltip placement="bottom" arrow title="Contacts">
-              <GridActionsCellItem
-                icon={
-                  <ContactPhoneRounded
-                    color="secondary"
-                    sx={{ fontSize: "25px" }}
-                  />
-                }
-                label="Contacts"
-                color="inherit"
-              />
-            </Tooltip>
-
             <Tooltip placement="bottom" arrow title="View">
               <GridActionsCellItem
                 icon={
-                  <VisibilityRounded color="info" sx={{ fontSize: "25px" }} />
+                  <VisibilityRounded
+                    color="info"
+                    sx={{ fontSize: "25px" }}
+                    onClick={(event) => {
+                      handleViewDialogOpen(event, params);
+                    }}
+                  />
                 }
                 label="View"
-                color="inherit"
-              />
-            </Tooltip>
-
-            <Tooltip placement="bottom" arrow title="Edit">
-              <GridActionsCellItem
-                icon={
-                  <EditNoteRounded color="success" sx={{ fontSize: "25px" }} />
-                }
-                label="Edit"
                 color="inherit"
               />
             </Tooltip>
@@ -143,28 +114,79 @@ export default function AllTeams() {
     },
   ];
 
-  const rows = [
-    {
-      id: 1,
-      name: "Facebook",
-      location: "Calefornia",
-      phone: 38292114,
-      address: "USA",
-      employess: 2100,
-    },
-    {
-      id: 2,
-      name: "Facebook",
-      location: "Calefornia",
-      phone: 38292114,
-      address: "USA",
-      employess: 2100,
-    },
-  ];
+  // Get Teams
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch("http://localhost:3002/api/team");
+        const data = await response.json();
+
+        // Filter users by CompanyID
+        const filteredUsers = data.filter(
+          (team) => team.CompanyID === parseInt(selectedCompanyId, 10)
+        );
+
+        setTeams(filteredUsers);
+        console.log(filteredUsers);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchData();
+  }, [selectedCompanyId]);
 
   return (
     <>
-      <DataTable columns={columns} rows={teamsRows} />
+      <Box
+        sx={{
+          height: "100% auto",
+          width: "70%",
+          m: 1,
+          p: 2,
+        }}
+      >
+        <DataGrid
+          rows={teams}
+          columns={columns}
+          getRowId={getRowId}
+          initialState={{
+            pagination: {
+              paginationModel: {
+                pageSize: 10,
+              },
+            },
+          }}
+          checkboxSelection
+          onRowSelectionModelChange={function (ids) {
+            console.log(teams);
+            console.log(ids);
+            const selectedIDs = new Set(ids);
+            const selectedRows = teams.filter((row) => selectedIDs.has(row));
+
+            setSelectedRows(selectedRows);
+          }}
+          slots={{ toolbar: GridToolbar }}
+          slotProps={{
+            toolbar: {
+              showQuickFilter: true,
+              quickFilterProps: { debounceMs: 500 },
+            },
+          }}
+          pageSizeOptions={[5]}
+          disableColumnSelector
+          disableDensitySelector
+        />
+        <pre style={{ fontSize: 10 }}>
+          {JSON.stringify(selectedTeam, null, 4)}
+        </pre>
+
+        <ViewDialog
+          open={viewDialog}
+          onClose={handleViewDialogClose}
+          team={selectedTeam}
+        />
+      </Box>
     </>
   );
 }
