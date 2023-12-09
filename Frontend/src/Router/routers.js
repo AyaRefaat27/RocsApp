@@ -13,11 +13,13 @@ import Users from "../Admin Dashboard/Users/Users";
 import Teams from "../Admin Dashboard/Teams/Teams";
 import Contacts from "../Admin Dashboard/Contacts/Contacts";
 import FootPrint from "../Admin Dashboard/FootPrint/FootPrint";
+import UserDashboard from "../Admin Dashboard/Pages/UserDashboard";
 export default function Routers() {
   return (
     <Routes>
       <Route path="/" element={<Navigate to="/login" />} />
       <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/user_dashboard" element={<UserDashboard />} />
       <Route path="/home" element={<Layout />} />
       <Route path="/business_account" element={<Profile />} />
       <Route path="/chatbot" element={<MainPage />} />
@@ -27,6 +29,7 @@ export default function Routers() {
       <Route path="/contacts" element={<Contacts />} />
       <Route path="/footprint" element={<FootPrint />} />
       <Route path="/user_profile" element={<UserProfile />} />
+      <Route path="/profile" element={<UserProfile />} />
       <Route path="/setting" element={<Setting />} />
       <Route path="/register" element={<SignUp />} />
       <Route path="/login" element={<SignIn />} />
